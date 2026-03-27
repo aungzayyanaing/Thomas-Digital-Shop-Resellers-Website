@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thomas Digital Reseller | Premium Digital Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        gold: '#FBBF24',
+                        richBlack: '#0A0A0A',
+                        darkGray: '#171717',
+                        softGray: '#262626'
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(251, 191, 36, 0.3)',
+                        'glow-hover': '0 0 30px rgba(251, 191, 36, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: #fff; overflow-x: hidden; }
+        .glass-panel { background: rgba(23, 23, 23, 0.65); backdrop-filter: blur(12px); border: 1px solid rgba(251, 191, 36, 0.15); }
+        .glass-panel:hover { border-color: rgba(251, 191, 36, 0.4); }
+        
+        /* Starry Background Animation */
+        .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; overflow: hidden; }
+        .star { position: absolute; background: rgba(251, 191, 36, 0.8); border-radius: 50%; animation: twinkle infinite alternate; }
+        @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px rgba(251,191,36,0.8); } }
+        
+        .hide { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0A0A0A; }
+        ::-webkit-scrollbar-thumb { background: #FBBF24; border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-sans relative">
+
+    <div class="stars" id="star-container"></div>
+
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-yellow-500/20 py-4 top-0">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('home')">
+                <i class="fa-solid fa-crown text-gold text-2xl drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]"></i>
+                <h1 class="text-xl md:text-2xl font-bold tracking-wider text-white">THOMAS DIGITAL <span class="text-gold">RESELLER</span></h1>
+            </div>
+            <div class="hidden md:flex gap-8 font-medium">
+                <button onclick="navigate('home')" class="hover:text-gold transition-colors">Home</button>
+                <button onclick="navigate('store')" class="hover:text-gold transition-colors">Store</button>
+                <button onclick="navigate('home')" class="hover:text-gold transition-colors">Review</button>
+            </div>
+            <div class="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full text-xs font-semibold border-gold/30">
+                <div class="w-2 h-2 rounded-full bg-gold animate-pulse"></div>
+                <span class="text-gold drop-shadow-md">Online Active Now</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 pb-32 container mx-auto px-4" id="app-container">
+        
+        <section id="view-home" class="fade-in space-y-16 mt-8">
+            <div class="text-center space-y-6">
+                <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                    WELCOME TO <br><span class="text-gold shadow-glow">THOMAS DIGITAL RESELLER</span>
+                </h2>
+                <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light">
+                    The premium luxury digital products marketplace for Myanmar users. <br>
+                    <span class="text-gold font-medium">မြန်မာနိုင်ငံ၏ အကောင်းဆုံး ဒီဂျစ်တယ်အရောင်းဆိုင်</span>
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 mt-6">
+                    <span class="glass-panel px-4 py-2 rounded-lg text-sm font-semibold border-gold/50 text-gold"><i class="fa-solid fa-robot mr-2"></i>AI Tools</span>
+                    <span class="glass-panel px-4 py-2 rounded-lg text-sm font-semibold border-gold/50 text-gold"><i class="fa-solid fa-shield mr-2"></i>Premium VPN</span>
+                    <span class="glass-panel px-4 py-2 rounded-lg text-sm font-semibold border-gold/50 text-gold"><i class="fa-solid fa-video mr-2"></i>Editing Pro</span>
+                    <span class="glass-panel px-4 py-2 rounded-lg text-sm font-semibold border-gold/50 text-gold"><i class="fa-solid fa-globe mr-2"></i>Global Payments</span>
+                </div>
+                <div class="flex justify-center gap-6 mt-10">
+                    <button onclick="navigate('store')" class="bg-gold text-richBlack px-8 py-3 rounded-xl font-bold text-lg shadow-glow hover:shadow-glow-hover transform hover:scale-105 transition-all">
+                        <i class="fa-solid fa-cart-shopping mr-2"></i> Shop Now
+                    </button>
+                    <a href="#" class="glass-panel px-8 py-3 rounded-xl font-bold text-lg hover:border-gold hover:text-gold transition-all flex items-center">
+                        <i class="fa-brands fa-telegram mr-2 text-blue-400"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <div class="glass-panel p-6 rounded-2xl hover:shadow-glow transition-all">
+                    <h3 class="text-xl font-bold text-gold mb-3"><i class="fa-regular fa-clock mr-2"></i> Shop Schedule</h3>
+                    <p class="text-gray-300">Open Daily: 9:00 AM to 11:00 PM</p>
+                    <p class="text-gray-400 text-sm mt-2">ဆိုင်ဖွင့်ချိန် - နေ့စဉ် မနက် ၉ နာရီ မှ ည ၁၁ နာရီအထိ</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl hover:shadow-glow transition-all border-l-4 border-l-gold">
+                    <h3 class="text-xl font-bold text-gold mb-3"><i class="fa-solid fa-circle-exclamation mr-2"></i> Important Notes</h3>
+                    <p class="text-gray-300">Please provide payment screenshot after transfer.</p>
+                    <p class="text-gray-400 text-sm mt-2">အရေးကြီး အချက်အလက်များ - ငွေလွှဲပြီးပါက Screenshot ပြပေးပါ။</p>
+                </div>
+            </div>
+
+            <div class="max-w-6xl mx-auto pt-10">
+                <h3 class="text-3xl font-bold text-center mb-10"><span class="text-gold border-b-2 border-gold pb-2">Verified</span> Reviews</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <div class="flex text-gold mb-2"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <h4 class="font-bold text-lg">Ko Aung</h4>
+                        <p class="text-gray-400 mt-2 text-sm">အရမ်းမြန်ပြီး service ကောင်းပါတယ်။ Premium အစစ်တွေမို့ ယုံကြည်စိတ်ချရပါတယ်။</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <div class="flex text-gold mb-2"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <h4 class="font-bold text-lg">Ma Thiri</h4>
+                        <p class="text-gray-400 mt-2 text-sm">VPN ဝယ်တာ ၅ မိနစ်အတွင်းရတယ်။ Admin လည်း သဘောကောင်းတယ်။</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <div class="flex text-gold mb-2"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <h4 class="font-bold text-lg">Zaw Min</h4>
+                        <p class="text-gray-400 mt-2 text-sm">Canva lifetime ဝယ်ထားတာ အဆင်ပြေတယ်။ Price လည်း တန်ပါတယ်။</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-store" class="hide fade-in">
+            <h2 class="text-3xl font-bold mb-8 text-center"><i class="fa-solid fa-store text-gold mr-3"></i> Premium <span class="text-gold">Store</span></h2>
+            
+            <div class="flex flex-wrap gap-2 mb-8 justify-center" id="category-filters">
+                </div>
+
+            <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                </div>
+        </section>
+
+        <section id="view-detail" class="hide fade-in max-w-4xl mx-auto">
+            <button onclick="navigate('store')" class="mb-6 text-gray-400 hover:text-gold transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i> Back to Store</button>
+            
+            <div class="glass-panel p-6 md:p-10 rounded-3xl flex flex-col md:flex-row gap-8 items-center mb-8 border-t-4 border-t-gold">
+                <div class="w-32 h-32 bg-darkGray rounded-2xl flex items-center justify-center text-6xl text-gold shadow-glow">
+                    <i id="detail-icon" class="fa-solid fa-box"></i>
+                </div>
+                <div>
+                    <h2 id="detail-name" class="text-3xl md:text-4xl font-bold mb-2">App Name</h2>
+                    <p id="detail-desc" class="text-gray-400 text-lg">Premium Access</p>
+                    <div class="mt-4 inline-block glass-panel px-4 py-1 rounded-full text-xs text-gold border-gold/40">Verified Premium Product</div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mb-6 border-l-4 border-gold pl-3">Select Pricing Plan</h3>
+            <div id="plans-container" class="space-y-4">
+                </div>
+        </section>
+
+        <section id="view-payment" class="hide fade-in max-w-2xl mx-auto text-center mt-10">
+            <div class="glass-panel p-10 rounded-3xl shadow-glow">
+                <div class="text-gold text-5xl mb-6"><i class="fa-solid fa-building-columns"></i></div>
+                <h2 class="text-3xl font-bold mb-2">Payment Instructions</h2>
+                <p class="text-gray-400 mb-8">ကျေးဇူးပြု၍ အောက်ပါအကောင့်များသို့ ငွေလွှဲပေးပါ။</p>
+                
+                <div class="space-y-4 text-left">
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-blue-500 flex justify-between items-center">
+                        <div><p class="text-sm text-gray-400">KBZPay</p><p class="font-bold text-lg tracking-wider">09 123 456 789</p><p class="text-xs text-gray-500">Thomas Reseller</p></div>
+                        <i class="fa-solid fa-copy text-gray-400 hover:text-gold cursor-pointer"></i>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-yellow-500 flex justify-between items-center">
+                        <div><p class="text-sm text-gray-400">Wave Pay</p><p class="font-bold text-lg tracking-wider">09 987 654 321</p><p class="text-xs text-gray-500">Thomas Reseller</p></div>
+                        <i class="fa-solid fa-copy text-gray-400 hover:text-gold cursor-pointer"></i>
+                    </div>
+                </div>
+                
+                <div class="mt-10">
+                    <button onclick="processReceipt()" class="w-full bg-gold text-richBlack py-4 rounded-xl font-bold text-lg hover:shadow-glow transition-all">
+                        I Understand & Proceed <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-receipt" class="hide fade-in max-w-2xl mx-auto mt-10">
+            <div class="glass-panel p-8 rounded-3xl bg-darkGray border border-gold/30 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 text-9xl text-gold opacity-5"><i class="fa-solid fa-file-invoice"></i></div>
+                <div class="text-center mb-8 border-b border-gray-700 pb-6">
+                    <h2 class="text-2xl font-bold text-gold mb-1">THOMAS DIGITAL RESELLER</h2>
+                    <p class="text-gray-400 text-sm">Order Summary & Receipt</p>
+                </div>
+                
+                <div id="receipt-items" class="space-y-4 mb-8">
+                    </div>
+                
+                <div class="border-t border-gray-700 pt-6 flex justify-between items-end mb-8">
+                    <span class="text-gray-400">Total Amount</span>
+                    <span id="receipt-total" class="text-3xl font-bold text-gold">0 MMK</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button class="glass-panel py-3 rounded-xl hover:text-gold transition flex justify-center items-center gap-2"><i class="fa-solid fa-copy"></i> Copy Order Info</button>
+                    <button class="bg-gold text-richBlack py-3 rounded-xl font-bold hover:shadow-glow transition flex justify-center items-center gap-2"><i class="fa-brands fa-telegram"></i> Message Admin</button>
+                    <button onclick="resetCartAndGoHome()" class="md:col-span-2 glass-panel py-3 rounded-xl hover:text-white border-gray-700 transition flex justify-center items-center gap-2 text-gray-400 mt-2">Back to Store</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="cart-bar" class="fixed bottom-0 w-full z-40 transform translate-y-full transition-transform duration-300">
+        <div class="bg-richBlack border-t-2 border-gold p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
+            <div class="container mx-auto px-4 flex justify-between items-center max-w-4xl">
+                <div>
+                    <p class="text-gray-400 text-sm">Grand Total</p>
+                    <p id="cart-total" class="text-2xl md:text-3xl font-bold text-gold">0 MMK</p>
+                </div>
+                <button onclick="navigate('payment')" class="bg-gold text-richBlack px-8 py-3 rounded-xl font-bold text-lg shadow-glow hover:scale-105 transition-all">
+                    Pay Now <i class="fa-solid fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure enforcing all requested apps and plan durations
+        const productData = [
+            // AI TOOLS
+            { id: 'ai-1', cat: 'AI Tools', name: 'ChatGPT', icon: 'fa-robot', plans: [
+                { id: 'p1', title: 'Personal Plus', desc: '1 Device (Private)', duration: '1 Month', price: 15000 },
+                { id: 'p2', title: 'Business Plus', desc: 'Invite Own Mail', duration: '1 Month', price: 20000 },
+                { id: 'p3', title: 'Business Plus', desc: 'Own', duration: '1 Month', price: 30000 },
+                { id: 'p4', title: 'Business Plus', desc: 'Own (Full Warranty)', duration: '1 Month', price: 45000 }
+            ]},
+            { id: 'ai-2', cat: 'AI Tools', name: 'Gemini Veo3', icon: 'fa-brain', plans: [
+                { id: 'p5', title: 'Private (2TB Storage)', desc: 'Full Access', duration: '1 Month', price: 18000 },
+                { id: 'p6', title: 'Private (2TB Storage)', desc: 'Full Access', duration: '3 Months', price: 50000 },
+                { id: 'p7', title: 'Own Mail', desc: 'Private Account', duration: '1 Month', price: 22000 },
+                { id: 'p8', title: 'Own Mail', desc: 'Private Account', duration: '3 Months', price: 60000 }
+            ]},
+            { id: 'ai-3', cat: 'AI Tools', name: 'Perplexity AI', icon: 'fa-magnifying-glass-chart', plans: [
+                { id: 'p9', title: 'Pro Plan', desc: '1 Device (Share)', duration: '1 Month', price: 10000 },
+                { id: 'p10', title: 'Pro Plan', desc: '1 Device (Private)', duration: '1 Month', price: 15000 },
+                { id: 'p11', title: 'Pro Plan', desc: '1 Device (Own Mail)', duration: '1 Month', price: 20000 }
+            ]},
+            { id: 'ai-4', cat: 'AI Tools', name: 'NOTE BOOK LM', icon: 'fa-book-journal-whills', plans: [] }, // Pricing Coming Soon
+
+            // VPN
+            { id: 'vpn-1', cat: 'VPN', name: 'Express VPN', icon: 'fa-shield-halved', plans: [
+                { id: 'v1', title: 'Premium', desc: '1 Device', duration: '1 Month', price: 8000 },
+                { id: 'v2', title: 'Premium', desc: '2 Devices', duration: '1 Month', price: 14000 },
+                { id: 'v3', title: 'Premium', desc: '5 Devices', duration: '1 Month', price: 25000 },
+                { id: 'v4', title: 'Quarterly', desc: '1 Device', duration: '3 Months', price: 22000 },
+                { id: 'v5', title: 'Quarterly', desc: '2 Devices', duration: '3 Months', price: 38000 },
+                { id: 'v6', title: 'Quarterly', desc: '5 Devices', duration: '3 Months', price: 70000 },
+                { id: 'v7', title: 'Half-Year', desc: '1 Device', duration: '6 Months', price: 40000 },
+                { id: 'v8', title: 'Half-Year', desc: '2 Devices', duration: '6 Months', price: 70000 },
+                { id: 'v9', title: 'Half-Year', desc: '5 Devices', duration: '6 Months', price: 130000 },
+                { id: 'v10', title: 'Yearly Plan', desc: '1 Device', duration: '1 Year', price: 75000 },
+                { id: 'v11', title: 'Yearly Plan', desc: '2 Devices', duration: '1 Year', price: 135000 },
+                { id: 'v12', title: 'Yearly Plan', desc: '5 Devices', duration: '1 Year', price: 250000 }
+            ]},
+            { id: 'vpn-2', cat: 'VPN', name: 'Outline VPN', icon: 'fa-network-wired', plans: [
+                { id: 'v13', title: 'Secure Plan', desc: '1 Device', duration: '1 Month', price: 5000 },
+                { id: 'v14', title: 'Secure Plan', desc: '2 Devices', duration: '1 Month', price: 9000 },
+                { id: 'v15', title: 'Secure Plan', desc: '5 Devices', duration: '1 Month', price: 20000 }
+            ]},
+            { id: 'vpn-3', cat: 'VPN', name: 'V2Box - Vray', icon: 'fa-bolt', plans: [
+                { id: 'v16', title: 'Fast Node', desc: '1 Device', duration: '1 Month', price: 6000 },
+                { id: 'v17', title: 'Fast Node', desc: '2 Devices', duration: '1 Month', price: 11000 },
+                { id: 'v18', title: 'Fast Node', desc: '5 Devices', duration: '1 Month', price: 24000 }
+            ]},
+            { id: 'vpn-4', cat: 'VPN', name: 'NordVpn', icon: 'fa-lock', plans: [
+                { id: 'v19', title: 'Share Plan', desc: 'Shared Account', duration: '1 Year', price: 25000 },
+                { id: 'v20', title: 'Private Plan', desc: 'Private Account', duration: '3 Months', price: 35000 }
+            ]},
+            { id: 'vpn-5', cat: 'VPN', name: 'Surfshark Vpn', icon: 'fa-water', plans: [
+                { id: 'v21', title: 'Share Plan', desc: 'Shared Access', duration: '1 Month', price: 7000 },
+                { id: 'v22', title: 'Share Plan', desc: 'Shared Access', duration: '2 Months', price: 12000 },
+                { id: 'v23', title: 'Private Plan', desc: 'Private Access', duration: '2 Months', price: 20000 }
+            ]},
+            { id: 'vpn-6', cat: 'VPN', name: 'HMA VPN', icon: 'fa-mask', plans: [
+                { id: 'v24', title: 'Private Plan', desc: 'Full Access', duration: '1 Month', price: 12000 }
+            ]},
+
+            // EDITING APPS
+            { id: 'ed-1', cat: 'Editing Apps', name: 'Capcut Pro', icon: 'fa-scissors', plans: [
+                { id: 'e1', title: 'Pro Plan', desc: '1 Device', duration: '1 Month', price: 10000 },
+                { id: 'e2', title: 'Pro Plan', desc: '2 Devices', duration: '1 Month', price: 18000 }
+            ]},
+            { id: 'ed-2', cat: 'Editing Apps', name: 'Alight Motion', icon: 'fa-film', plans: [
+                { id: 'e3', title: 'Share Account', desc: '1 Device', duration: '9 Months', price: 15000 },
+                { id: 'e4', title: 'Share Account', desc: '1 Device', duration: '1 Year', price: 18000 },
+                { id: 'e5', title: 'Private Account', desc: '1 Device', duration: '9 Months', price: 25000 },
+                { id: 'e6', title: 'Private Account', desc: '1 Device', duration: '1 Year', price: 30000 }
+            ]},
+            { id: 'ed-3', cat: 'Editing Apps', name: 'Canva Pro', icon: 'fa-palette', plans: [
+                { id: 'e7', title: 'Lifetime Plan', desc: 'Lifetime Access', duration: 'Lifetime', price: 20000 }
+            ]},
+            { id: 'ed-4', cat: 'Editing Apps', name: 'Piscart', icon: 'fa-pen-nib', plans: [
+                { id: 'e8', title: 'Gold Plan', desc: 'Share', duration: '1 Month', price: 5000 },
+                { id: 'e9', title: 'Gold Plan', desc: 'Private', duration: '1 Month', price: 12000 }
+            ]},
+            { id: 'ed-5', cat: 'Editing Apps', name: 'Remini', icon: 'fa-wand-magic-sparkles', plans: [
+                { id: 'e10', title: 'Share Plan', desc: 'Web Version', duration: '1 Month', price: 5000 },
+                { id: 'e11', title: 'Share Plan', desc: 'APK Lite', duration: '1 Year', price: 12000 },
+                { id: 'e12', title: 'Share Plan', desc: 'APK Pro', duration: '1 Year', price: 18000 },
+                { id: 'e13', title: 'Private Plan', desc: 'Web Version', duration: '1 Month', price: 15000 }
+            ]},
+            
+            // Design & Enhancement
+            { id: 'de-1', cat: 'Design & Enhancement', name: 'Wink', icon: 'fa-eye', plans: [
+                { id: 'de1', title: 'Share Plan', desc: 'Access', duration: '1 Month', price: 5000 },
+                { id: 'de2', title: 'Share Plan', desc: 'Access', duration: '1 Year', price: 25000 },
+                { id: 'de3', title: 'Private Plan', desc: 'Private', duration: '1 Week', price: 6000 },
+                { id: 'de4', title: 'Private Plan', desc: 'Private', duration: '1 Month', price: 18000 },
+                { id: 'de5', title: 'Private Plan', desc: 'Own Mail', duration: '1 Month', price: 25000 }
+            ]},
+
+            // GLOBAL PAYMENTS
+            { id: 'gp-1', cat: 'Global Payments Apps', name: 'Paypal', icon: 'fa-paypal', plans: [
+                { id: 'g1', title: 'Personal Plan', desc: 'Normal Account', duration: 'Life', price: 30000 },
+                { id: 'g2', title: 'Personal Plan', desc: 'VISA Account', duration: 'Life', price: 50000 },
+                { id: 'g3', title: 'Personal Plan', desc: 'ID Verified Account', duration: 'Life', price: 80000 },
+                { id: 'g4', title: 'Personal Plan', desc: 'ID Verified + VISA', duration: 'Life', price: 100000 }
+            ]},
+            { id: 'gp-2', cat: 'Global Payments Apps', name: 'Wise', icon: 'fa-money-bill-transfer', plans: [
+                { id: 'g5', title: 'Account Creation', desc: 'Verified Account', duration: 'Life', price: 150000 }
+            ]},
+            { id: 'gp-3', cat: 'Global Payments Apps', name: 'Payoneer', icon: 'fa-credit-card', plans: [
+                { id: 'g6', title: 'Account Creation', desc: 'Verified Account', duration: 'Life', price: 120000 }
+            ]},
+
+            // SOCIAL & MEDIA
+            { id: 'sm-1', cat: 'Social & Media', name: 'Tiktok Japan', icon: 'fa-tiktok', plans: [
+                { id: 's1', title: 'Japan Account', desc: '1 Account', duration: 'Life', price: 25000 }
+            ]},
+            { id: 'sm-2', cat: 'Social & Media', name: 'Spotify', icon: 'fa-spotify', plans: [
+                { id: 's2', title: 'Premium Plan', desc: '1 Device (Private)', duration: '2 Months', price: 8000 },
+                { id: 's3', title: 'Premium Plan', desc: '1 Device (Family)', duration: '2 Months', price: 6000 }
+            ]},
+            { id: 'sm-3', cat: 'Social & Media', name: 'YouTube Premium', icon: 'fa-youtube', plans: [
+                { id: 's4', title: 'Private Plan', desc: 'Ad-free', duration: '1 Month', price: 7000 },
+                { id: 's5', title: 'Private Plan', desc: 'Ad-free', duration: '3 Months', price: 20000 }
+            ]},
+            { id: 'sm-4', cat: 'Social & Media', name: 'Zoom', icon: 'fa-video', plans: [
+                { id: 's6', title: 'Private Pro', desc: '1 Device', duration: '14 Days', price: 15000 },
+                { id: 's7', title: 'Private Pro', desc: '1 Device', duration: '1 Month', price: 28000 }
+            ]},
+
+            // TELEGRAM & STORAGE
+            { id: 'ts-1', cat: 'Telegram & Storage', name: 'Telegram Premium', icon: 'fa-paper-plane', plans: [
+                { id: 't1', title: 'Login Method', desc: 'Direct', duration: '1 Month', price: 12000 },
+                { id: 't2', title: 'Login Method', desc: 'Direct', duration: '1 Year', price: 110000 },
+                { id: 't3', title: 'Gift Plan', desc: 'Via Username', duration: '3 Months', price: 45000 },
+                { id: 't4', title: 'Gift Plan', desc: 'Via Username', duration: '6 Months', price: 85000 },
+                { id: 't5', title: 'Gift Plan', desc: 'Via Username', duration: '12 Months', price: 150000 },
+                { id: 't6', title: 'Link Plan', desc: 'Gift Link', duration: '3 Months', price: 42000 },
+                { id: 't7', title: 'Link Plan', desc: 'Gift Link', duration: '6 Months', price: 80000 },
+                { id: 't8', title: 'Link Plan', desc: 'Gift Link', duration: '12 Months', price: 140000 }
+            ]},
+            { id: 'ts-2', cat: 'Telegram & Storage', name: 'Telegram Boosting', icon: 'fa-rocket', plans: [
+                { id: 't9', title: 'Post View', desc: '1,000 Views', duration: 'One-time', price: 2000 },
+                { id: 't10', title: 'Post View', desc: '10,000 Views', duration: 'One-time', price: 15000 },
+                { id: 't11', title: 'Post View', desc: '100,000 Views', duration: 'One-time', price: 100000 },
+                { id: 't12', title: 'Positive Reactions', desc: '1,000 Reactions', duration: 'One-time', price: 5000 },
+                { id: 't13', title: 'Positive Reactions', desc: '10,000 Reactions', duration: 'One-time', price: 40000 },
+                { id: 't14', title: 'Negative Reactions', desc: '1,000 Reactions', duration: 'One-time', price: 5000 },
+                { id: 't15', title: 'Negative Reactions', desc: '10,000 Reactions', duration: 'One-time', price: 40000 },
+                { id: 't16', title: 'Custom Reactions', desc: '1,000 Reactions', duration: 'One-time', price: 8000 },
+                { id: 't17', title: 'Members (Refill)', desc: '1,000 Members', duration: '30 Days', price: 15000 }
+            ]},
+            { id: 'ts-3', cat: 'Telegram & Storage', name: 'TeraBox', icon: 'fa-cloud', plans: [
+                { id: 't18', title: 'Sharing Plan', desc: '2TB Space', duration: '1 Year', price: 25000 }
+            ]},
+
+            // EDUCATION
+            { id: 'edu-1', cat: 'Education', name: 'Duolingo Super', icon: 'fa-language', plans: [
+                { id: 'ed1', title: 'Family Head', desc: 'Invite 5 Email', duration: '14 Days', price: 5000 },
+                { id: 'ed2', title: 'Family Head', desc: 'Invite 5 Email', duration: '1 Month', price: 9000 },
+                { id: 'ed3', title: 'Invite Private', desc: 'Private Slot', duration: '14 Days', price: 3000 },
+                { id: 'ed4', title: 'Invite Private', desc: 'Private Slot', duration: '1 Month', price: 5000 }
+            ]}
+        ];
+
+        // Adobe Suite Generation
+        const adobeApps = [
+            "Adobe Creative Cloud", "Photoshop Web", "Lightroom", "Adobe Premiere Pro", 
+            "Adobe Illustrator", "Adobe After Effects", "Adobe Acrobat Pro", "Adobe InDesign", 
+            "Adobe Audition", "Adobe Animate", "Adobe Dreamweaver", "Adobe Bridge", 
+            "Adobe Express", "Adobe Capture", "Adobe Aero", "Adobe Fonts", "Adobe Fresco", 
+            "Adobe Media Encoder", "Adobe Character Animator", "Adobe Firefly"
+        ];
+
+        adobeApps.forEach((appName, index) => {
+            let appPlans = [];
+            if (appName === "Adobe Creative Cloud") {
+                appPlans = [
+                    { id: `ad-${index}-1`, title: 'Private Plan', desc: 'Private', duration: '4 Months', price: 40000 },
+                    { id: `ad-${index}-2`, title: 'Private Plan', desc: 'Own Mail Private', duration: '4 Months', price: 55000 }
+                ];
+            } else if (appName === "Photoshop Web") {
+                appPlans = [{ id: `ad-${index}-1`, title: 'Private', desc: 'Full Access', duration: '12 Months', price: 45000 }];
+            } else if (appName === "Lightroom") {
+                appPlans = [{ id: `ad-${index}-1`, title: 'Share Plan', desc: 'Shared Access', duration: '1 Year', price: 15000 }];
+            } else {
+                appPlans = [{ id: `ad-${index}-1`, title: 'Private Plan', desc: 'Private', duration: '4 Months', price: 25000 }];
+            }
+
+            productData.push({
+                id: `adobe-${index}`, cat: 'Adobe Suite', name: appName, icon: 'fa-object-group', plans: appPlans
+            });
+        });
+
+        const categories = [...new Set(productData.map(p => p.cat))];
+        let currentProduct = null;
+        let cart = {}; // Store format: { "planId": { qty: 1, name: "...", planText: "...", price: 100, duration: "1 Month" } }
+
+        // Initialization
+        window.onload = () => {
+            createStars();
+            renderCategories();
+            renderProducts('All');
+        };
+
+        function createStars() {
+            const container = document.getElementById('star-container');
+            for(let i=0; i<50; i++) {
+                let star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Navigation state
+        function navigate(viewId) {
+            ['home', 'store', 'detail', 'payment', 'receipt'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hide');
+            });
+            document.getElementById(`view-${viewId}`).classList.remove('hide');
+            window.scrollTo(0, 0);
+        }
+
+        // Render Store
+        function renderCategories() {
+            const container = document.getElementById('category-filters');
+            container.innerHTML = `<button onclick="renderProducts('All')" class="cat-btn glass-panel px-4 py-2 rounded-full text-sm font-semibold hover:border-gold hover:text-gold transition-all text-gold border-gold">All Products</button>`;
+            
+            categories.forEach(cat => {
+                container.innerHTML += `<button onclick="renderProducts('${cat}')" class="cat-btn glass-panel px-4 py-2 rounded-full text-sm font-semibold hover:border-gold hover:text-gold transition-all">${cat}</button>`;
+            });
+        }
+
+        function renderProducts(category) {
+            // Update active state
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if(btn.innerText === category || (category === 'All' && btn.innerText === 'All Products')) {
+                    btn.classList.add('text-gold', 'border-gold');
+                } else {
+                    btn.classList.remove('text-gold', 'border-gold');
+                }
+            });
+
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            const filtered = category === 'All' ? productData : productData.filter(p => p.cat === category);
+            
+            filtered.forEach(p => {
+                grid.innerHTML += `
+                    <div onclick="openProduct('${p.id}')" class="glass-panel p-5 rounded-2xl cursor-pointer transform hover:-translate-y-2 hover:shadow-glow transition-all duration-300 group text-center flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-xl bg-black border border-gray-800 flex items-center justify-center text-3xl text-gray-300 group-hover:text-gold group-hover:border-gold/50 transition-colors mb-4">
+                            <i class="fa-solid ${p.icon}"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-1 group-hover:text-gold transition-colors">${p.name}</h4>
+                        <p class="text-xs text-gray-500 mb-3">${p.cat}</p>
+                        ${p.plans.length === 0 ? '<span class="text-xs text-gold border border-gold/30 px-2 py-1 rounded-full">Pricing Coming Soon</span>' : ''}
+                    </div>
+                `;
+            });
+        }
+
+        // Product Detail & Plans
+        function openProduct(id) {
+            currentProduct = productData.find(p => p.id === id);
+            
+            document.getElementById('detail-icon').className = `fa-solid ${currentProduct.icon}`;
+            document.getElementById('detail-name').innerText = currentProduct.name;
+            document.getElementById('detail-desc').innerText = `Category: ${currentProduct.cat}`;
+            
+            const plansContainer = document.getElementById('plans-container');
+            plansContainer.innerHTML = '';
+            
+            if (currentProduct.plans.length === 0) {
+                plansContainer.innerHTML = `
+                    <div class="glass-panel p-8 rounded-2xl text-center border-dashed border-2 border-gray-700">
+                        <i class="fa-solid fa-hourglass-half text-4xl text-gold mb-4"></i>
+                        <h4 class="text-2xl font-bold text-gray-300">Pricing Coming Soon</h4>
+                        <p class="text-gray-500 mt-2">We are updating the plans for this premium product. Please check back later.</p>
+                    </div>`;
+            } else {
+                currentProduct.plans.forEach(plan => {
+                    const qty = cart[plan.id] ? cart[plan.id].qty : 0;
+                    
+                    // Duration Badge Style based on duration type
+                    let durationClass = "bg-yellow-900/40 text-gold border-gold/50";
+                    if(plan.duration.toLowerCase().includes('life')) durationClass = "bg-purple-900/40 text-purple-400 border-purple-500/50";
+                    if(plan.duration.toLowerCase().includes('one-time')) durationClass = "bg-green-900/40 text-green-400 border-green-500/50";
+
+                    plansContainer.innerHTML += `
+                        <div class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-gold/40 transition-colors">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-1">
+                                    <h4 class="font-bold text-lg text-white">${plan.title}</h4>
+                                    <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${durationClass}">${plan.duration}</span>
+                                </div>
+                                <p class="text-sm text-gray-400"><i class="fa-solid fa-desktop mr-1 text-gray-500"></i> ${plan.desc}</p>
+                            </div>
+                            
+                            <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+                                <span class="font-bold text-gold text-lg tracking-wide">${plan.price.toLocaleString()} MMK</span>
+                                
+                                <div class="flex items-center bg-black rounded-lg border border-gray-700 overflow-hidden">
+                                    <button onclick="updateQty('${plan.id}', -1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-800 hover:text-gold transition"><i class="fa-solid fa-minus"></i></button>
+                                    <span id="qty-${plan.id}" class="w-10 text-center font-bold">${qty}</span>
+                                    <button onclick="updateQty('${plan.id}', 1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-800 hover:text-gold transition"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            navigate('detail');
+        }
+
+        // Cart Logic
+        function updateQty(planId, change) {
+            const plan = currentProduct.plans.find(p => p.id === planId);
+            
+            if (!cart[planId]) {
+                if (change < 0) return;
+                cart[planId] = { 
+                    qty: 0, 
+                    name: currentProduct.name, 
+                    planText: plan.title, 
+                    desc: plan.desc,
+                    duration: plan.duration, 
+                    price: plan.price 
+                };
+            }
+            
+            cart[planId].qty += change;
+            
+            if (cart[planId].qty <= 0) {
+                delete cart[planId];
+                document.getElementById(`qty-${planId}`).innerText = '0';
+            } else {
+                document.getElementById(`qty-${planId}`).innerText = cart[planId].qty;
+            }
+            
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            let itemsCount = 0;
+            
+            for (let key in cart) {
+                total += cart[key].qty * cart[key].price;
+                itemsCount += cart[key].qty;
+            }
+            
+            const cartBar = document.getElementById('cart-bar');
+            document.getElementById('cart-total').innerText = total.toLocaleString() + ' MMK';
+            
+            if (itemsCount > 0) {
+                cartBar.classList.remove('translate-y-full');
+            } else {
+                cartBar.classList.add('translate-y-full');
+            }
+        }
+
+        // Receipt Logic
+        function processReceipt() {
+            const container = document.getElementById('receipt-items');
+            container.innerHTML = '';
+            let total = 0;
+
+            for (let key in cart) {
+                const item = cart[key];
+                const lineTotal = item.qty * item.price;
+                total += lineTotal;
+                
+                container.innerHTML += `
+                    <div class="flex justify-between items-start border-b border-gray-800 pb-3">
+                        <div>
+                            <p class="font-bold text-white">${item.name} <span class="text-xs text-gray-500 font-normal">x${item.qty}</span></p>
+                            <p class="text-xs text-gray-400">${item.planText} - ${item.desc}</p>
+                            <span class="text-[10px] bg-gold/20 text-gold px-2 rounded mt-1 inline-block border border-gold/30">${item.duration}</span>
+                        </div>
+                        <p class="font-semibold">${lineTotal.toLocaleString()} MMK</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('receipt-total').innerText = total.toLocaleString() + ' MMK';
+            document.getElementById('cart-bar').classList.add('translate-y-full'); // hide cart bar
+            navigate('receipt');
+        }
+
+        function resetCartAndGoHome() {
+            cart = {};
+            calculateTotal();
+            navigate('home');
+        }
+    </script>
+</body>
+</html>
