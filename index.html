@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ThomasShop | Digital Reseller Website</title>
+  <title>Thomas Digital Reseller</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  npx plugins add vercel/vercel-plugin
 
   <script>
     tailwind.config = {
@@ -41,10 +43,10 @@
     }
 
     .glass {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(250,204,21,0.10);
-    }
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(250,204,21,0.10);
+}
 
     .hidden-view {
       display: none !important;
@@ -284,23 +286,23 @@
     <div class="bg-black/95 border-t border-yellow-400/25 p-4">
       <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
         <div class="flex items-center gap-4">
-          <button onclick="clearCart()" class="w-10 h-10 rounded-xl glass hover:text-red-400 transition">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-          <div>
-            <p class="text-gray-400 text-sm">Grand Total</p>
-            <p id="cart-total" class="text-2xl font-bold text-gold">0 Ks</p>
-          </div>
-        </div>
+  <button onclick="clearCart()" class="w-10 h-10 rounded-xl glass hover:text-red-400 transition">
+    <i class="fa-solid fa-trash"></i>
+  </button>
+  <div>
+    <p class="text-gray-500 text-xs uppercase tracking-widest">Total</p>
+    <p id="cart-total" class="text-2xl font-bold text-gold">0 Ks</p>
+  </div>
+</div>
 
-        <button onclick="openPaymentModal()" class="bg-gold text-black px-6 md:px-8 py-3 rounded-2xl font-bold shadow-goldGlow hover:scale-105 transition">
-          Pay Now <i class="fa-solid fa-chevron-right ml-1"></i>
-        </button>
+<button onclick="openPaymentModal()" class="bg-gold text-black px-6 md:px-8 py-3 rounded-2xl font-bold transition">
+  Checkout <i class="fa-solid fa-chevron-right ml-1"></i>
+</button>
       </div>
     </div>
   </div>
 
-  <div id="payment-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+  <div id="payment-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden opacity-0 pointer-events-none items-center justify-center p-4 transition duration-200">
     <div class="glass w-full max-w-2xl rounded-3xl p-8 relative">
       <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gold text-xl">
         <i class="fa-solid fa-xmark"></i>
@@ -353,7 +355,7 @@
         icon: "fa-robot",
         plans: [
           { id: "chatgpt-1", title: "Personal Plus", subtitle: "1 Device (Private)", duration: "1 Month", price: 32000 },
-          { id: "chatgpt-2", title: "Business Plus", subtitle: "Invite Own Mail", duration: "1 Month", price: 24000 },
+          { id: "chatgpt-2", title: "Business Plus", subtitle: "Invite Own Mail", duration: "1 Month", price: 240000 },
           { id: "chatgpt-3", title: "Business Plus", subtitle: "Own", duration: "1 Month", price: 40000 },
           { id: "chatgpt-4", title: "Business Plus", subtitle: "Own (Full Warranty)", duration: "1 Month", price: 44000 }
         ]
@@ -393,7 +395,7 @@
         img: "https://play-lh.googleusercontent.com/CnGsOmhIKfo1_IAnCUxAYXBaxkJ11rQXqPAGU_t29S6nVsrzTx-3OjMWFf2fk_b7u3g=s256-rw",
         icon: "fa-shield-halved",
         plans: [
-          { id: "express-1", title: "1 Month", subtitle: "1 Device", duration: "1 Month", price: 6500 },
+          { id: "express-1", title: "1 Month", subtitle: "1 Device", duration: "1 Month", price: 65000 },
           { id: "express-2", title: "1 Month", subtitle: "2 Devices", duration: "1 Month", price: 18000 },
           { id: "express-3", title: "1 Month", subtitle: "5 Devices", duration: "1 Month", price: 35000 },
           { id: "express-4", title: "3 Months", subtitle: "1 Device", duration: "3 Months", price: 28000 },
@@ -880,27 +882,30 @@
     let cart = {};
 
     function initStars() {
-      const layer = document.getElementById("star-layer");
-      for (let i = 0; i < 70; i++) {
-        const star = document.createElement("div");
-        const size = Math.random() * 3 + 1;
-        star.className = "star";
-        star.style.width = size + "px";
-        star.style.height = size + "px";
-        star.style.left = Math.random() * 100 + "vw";
-        star.style.top = Math.random() * 100 + "vh";
-        star.style.animationDuration = (Math.random() * 3 + 1.5) + "s";
-        layer.appendChild(star);
-      }
-    }
+  const layer = document.getElementById("star-layer");
+  for (let i = 0; i < 24; i++) {
+    const star = document.createElement("div");
+    const size = Math.random() * 2 + 1;
+    star.className = "star";
+    star.style.width = size + "px";
+    star.style.height = size + "px";
+    star.style.left = Math.random() * 100 + "vw";
+    star.style.top = Math.random() * 100 + "vh";
+    star.style.animationDuration = (Math.random() * 4 + 2) + "s";
+    layer.appendChild(star);
+  }
+}
 
-    function showView(view) {
-      ["home", "store", "detail", "review", "receipt"].forEach(id => {
-        document.getElementById("view-" + id).classList.add("hidden-view");
-      });
-      document.getElementById("view-" + view).classList.remove("hidden-view");
-      window.scrollTo(0, 0);
-    }
+   function showView(view) {
+  ["home", "store", "detail", "review", "receipt"].forEach(id => {
+    document.getElementById("view-" + id).classList.add("hidden-view");
+  });
+
+  document.getElementById("view-" + view).classList.remove("hidden-view");
+  window.scrollTo(0, 0);
+
+  updateCartBar();
+}
 
     function renderCategories() {
       const container = document.getElementById("category-filters");
@@ -921,26 +926,29 @@
     }
 
     function renderProducts(category = "All Products") {
-      const grid = document.getElementById("products-grid");
-      grid.innerHTML = "";
+  const grid = document.getElementById("products-grid");
 
-      const filtered = category === "All Products"
-        ? productData
-        : productData.filter(item => item.cat === category);
+  const filtered = category === "All Products"
+    ? productData
+    : productData.filter(item => item.cat === category);
 
-      filtered.forEach(p => {
-        grid.innerHTML += `
-          <div onclick="openProduct('${p.id}')" class="glass rounded-3xl p-5 text-center cursor-pointer hover:-translate-y-2 hover:shadow-goldGlow transition duration-300 flex flex-col items-center">
-            <div class="w-16 h-16 rounded-2xl overflow-hidden bg-cardBlack border border-white/10 mb-4 flex items-center justify-center">
-              <img src="${p.img || ""}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-              <i class="fa-solid ${p.icon} text-gold text-2xl hidden"></i>
-            </div>
-            <h4 class="font-bold text-sm md:text-base leading-tight">${p.name}</h4>
-            <p class="text-[11px] text-gray-500 mt-1">${p.desc}</p>
-          </div>
-        `;
-      });
-    }
+  let html = "";
+
+  filtered.forEach(p => {
+    html += `
+      <div onclick="openProduct('${p.id}')" class="glass rounded-3xl p-5 text-center cursor-pointer hover:-translate-y-1 transition duration-200 flex flex-col items-center">
+        <div class="w-16 h-16 rounded-2xl overflow-hidden bg-cardBlack border border-white/10 mb-4 flex items-center justify-center">
+          <img src="${p.img || ""}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+          <i class="fa-solid ${p.icon} text-gold text-2xl hidden"></i>
+        </div>
+        <h4 class="font-bold text-sm md:text-base leading-tight">${p.name}</h4>
+        <p class="text-[11px] text-gray-500 mt-1">${p.desc}</p>
+      </div>
+    `;
+  });
+
+  grid.innerHTML = html;
+}
 
     function openProduct(id) {
       currentProduct = productData.find(item => item.id === id);
@@ -1031,24 +1039,28 @@
       updateCartBar();
     }
 
-    function updateCartBar() {
-      let total = 0;
-      let count = 0;
+   function updateCartBar() {
+  let total = 0;
+  let count = 0;
 
-      Object.values(cart).forEach(item => {
-        total += item.qty * item.price;
-        count += item.qty;
-      });
+  Object.values(cart).forEach(item => {
+    total += item.qty * item.price;
+    count += item.qty;
+  });
 
-      document.getElementById("cart-total").innerText = total.toLocaleString() + " Ks";
+  document.getElementById("cart-total").innerText = total.toLocaleString() + " Ks";
 
-      const cartBar = document.getElementById("cart-bar");
-      if (count > 0) {
-        cartBar.classList.remove("translate-y-full");
-      } else {
-        cartBar.classList.add("translate-y-full");
-      }
-    }
+  const cartBar = document.getElementById("cart-bar");
+
+  const homeVisible = !document.getElementById("view-home").classList.contains("hidden-view");
+  const receiptVisible = !document.getElementById("view-receipt").classList.contains("hidden-view");
+
+  if (count > 0 && !homeVisible && !receiptVisible) {
+    cartBar.classList.remove("translate-y-full");
+  } else {
+    cartBar.classList.add("translate-y-full");
+  }
+}
 
     function clearCart() {
       cart = {};
@@ -1063,17 +1075,20 @@
     }
 
     function openPaymentModal() {
-      if (!Object.keys(cart).length) return;
-      const modal = document.getElementById("payment-modal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
+  if (!Object.keys(cart).length) return;
+  const modal = document.getElementById("payment-modal");
+  modal.classList.remove("hidden", "opacity-0", "pointer-events-none");
+  modal.classList.add("flex", "opacity-100");
+}
 
-    function closePaymentModal() {
-      const modal = document.getElementById("payment-modal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
+function closePaymentModal() {
+  const modal = document.getElementById("payment-modal");
+  modal.classList.remove("flex", "opacity-100");
+  modal.classList.add("opacity-0", "pointer-events-none");
+  setTimeout(() => {
+    modal.classList.add("hidden");
+  }, 200);
+}
 
     function copyText(text) {
   navigator.clipboard.writeText(text);
