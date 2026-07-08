@@ -34,28 +34,68 @@
   </script>
 
   <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background: #050505;
-      color: white;
+      color: #f8fafc;
       overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at top left, rgba(250, 204, 21, 0.16), transparent 28%),
+        radial-gradient(circle at 82% 0%, rgba(255,255,255,0.06), transparent 22%),
+        radial-gradient(circle at 20% 100%, rgba(250, 204, 21, 0.10), transparent 22%);
+      z-index: -3;
     }
 
     .glass {
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(250,204,21,0.10);
-}
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(250,204,21,0.10);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.24);
+    }
+
+    .glass-strong {
+      background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+      border: 1px solid rgba(250,204,21,0.16);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.3);
+    }
 
     .hidden-view {
       display: none !important;
     }
 
     .fade-in {
-      animation: fadeIn .35s ease;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -64,9 +104,9 @@
       inset: 0;
       z-index: -2;
       background:
-        radial-gradient(circle at top, rgba(250,204,21,.08), transparent 25%),
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,.04), transparent 20%),
-        radial-gradient(circle at bottom, rgba(250,204,21,.04), transparent 30%),
+        radial-gradient(circle at top, rgba(250,204,21,.08), transparent 24%),
+        radial-gradient(circle at 85% 15%, rgba(255,255,255,.04), transparent 20%),
+        radial-gradient(circle at bottom, rgba(250,204,21,.04), transparent 26%),
         #000;
     }
 
@@ -86,7 +126,7 @@
     }
 
     @keyframes twinkle {
-      from { opacity: .18; transform: scale(.85); }
+      from { opacity: .16; transform: scale(.85); }
       to { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px rgba(250,204,21,.5); }
     }
 
@@ -94,6 +134,17 @@
       color: #facc15;
       border-color: rgba(250,204,21,.45);
       box-shadow: 0 0 16px rgba(250,204,21,.12);
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(250,204,21,.28);
+      box-shadow: 0 24px 55px rgba(0,0,0,.38);
+    }
+
+    .plan-card:hover {
+      border-color: rgba(250,204,21,.25);
+      transform: translateY(-2px);
     }
 
     .qty-pill:empty {
@@ -105,238 +156,474 @@
     ::-webkit-scrollbar-thumb { background: #facc15; border-radius: 999px; }
   </style>
 </head>
-<body class="font-sans min-h-screen">
-
+<body class="font-sans min-h-screen text-white">
   <div class="space-bg"></div>
   <div id="star-layer" class="star-layer"></div>
 
   <nav class="fixed top-0 left-0 right-0 z-50 glass">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
       <button onclick="showView('home')" class="flex items-center gap-3 text-left">
-        <div class="w-10 h-10 rounded-2xl bg-black border border-yellow-400/20 flex items-center justify-center shadow-goldGlow">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl border border-yellow-400/20 bg-black shadow-goldGlow">
           <i class="fa-solid fa-crown text-gold"></i>
         </div>
-        <div class="font-extrabold tracking-tight text-lg md:text-2xl">
-          THOMAS DIGITAL <span class="text-gold">RESELLER</span>
+        <div class="text-base font-extrabold tracking-[0.2em] sm:text-lg">
+          THOMAS <span class="text-gold">DIGITAL</span>
         </div>
       </button>
 
-      <div class="hidden md:flex items-center gap-8 text-sm font-semibold">
-        <button onclick="showView('home')" class="hover:text-gold transition">Home</button>
-        <button onclick="showView('store')" class="hover:text-gold transition">Store</button>
-        <button onclick="showView('review')" class="hover:text-gold transition">Review</button>
+      <div class="hidden items-center gap-7 text-sm font-semibold text-white/80 md:flex">
+        <button onclick="showView('home')" class="transition hover:text-gold">Home</button>
+        <button onclick="showView('store')" class="transition hover:text-gold">Store</button>
+        <button onclick="showView('review')" class="transition hover:text-gold">Reviews</button>
       </div>
 
-      <div class="glass px-3 py-2 rounded-full text-xs font-semibold flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
-        <span class="text-gold">Online Active Now</span>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="showView('store')" class="hidden rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-xs font-semibold text-gold sm:flex sm:items-center sm:gap-2">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Search
+        </button>
+        <button class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition hover:text-gold">EN</button>
+        <button class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition hover:text-gold">Theme</button>
+        <a href="https://t.me/Thomas_Shops" target="_blank" class="inline-flex items-center gap-2 rounded-full border border-yellow-400/20 bg-gold px-3 py-2 text-xs font-semibold text-black transition hover:shadow-goldGlow sm:px-4 sm:py-2 sm:text-sm">
+          <i class="fa-brands fa-telegram"></i>
+          <span class="hidden sm:inline">Telegram</span>
+          <span class="sm:hidden">Chat</span>
+        </a>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-7xl mx-auto px-4 pt-28 pb-36">
-
+  <main class="mx-auto max-w-7xl px-4 pb-36 pt-28 sm:px-6 lg:px-8 lg:pt-32">
     <section id="view-home" class="fade-in">
-      <div class="text-center space-y-8">
-        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-          WELCOME TO <br>
-          <span class="text-gold drop-shadow-[0_0_14px_rgba(250,204,21,.35)]">THOMAS DIGITAL RESELLER</span>
-        </h1>
+      <div class="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div class="reveal text-center lg:text-left">
+          <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-gold">
+            <i class="fa-solid fa-bolt"></i>
+            Premium digital marketplace
+          </div>
+          <h1 class="text-4xl font-black leading-[0.95] tracking-tight text-white sm:text-5xl lg:text-7xl">
+            Premium access to
+            <span class="block text-gold">the world’s best digital products.</span>
+          </h1>
+          <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-400 lg:mx-0 lg:text-lg">
+            Discover AI tools, VPNs, editing apps, Adobe suites, premium subscriptions and more from a trusted reseller experience crafted for founders, creators, designers, and modern teams.
+          </p>
+          <div class="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <button onclick="showView('store')" class="rounded-2xl bg-gold px-7 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:shadow-goldGlow">
+              <i class="fa-solid fa-bag-shopping mr-2"></i>Explore Marketplace
+            </button>
+            <a href="https://t.me/Thomas_Shops" target="_blank" class="rounded-2xl border border-white/10 bg-white/5 px-7 py-3 text-sm font-semibold text-white transition hover:text-gold">
+              <i class="fa-brands fa-telegram mr-2"></i>Talk to Admin
+            </a>
+          </div>
 
-        <p class="text-gray-400 max-w-2xl mx-auto text-sm md:text-lg leading-relaxed">
-          Premium digital products marketplace for Myanmar users.
-          Clean luxury yellow and black design with premium plans, fast delivery, and modern reseller experience.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-3">
-          <div class="glass px-4 py-2 rounded-xl text-sm font-semibold text-gold"><i class="fa-solid fa-robot mr-2"></i>AI Tools</div>
-          <div class="glass px-4 py-2 rounded-xl text-sm font-semibold text-gold"><i class="fa-solid fa-shield-halved mr-2"></i>Premium VPN</div>
-          <div class="glass px-4 py-2 rounded-xl text-sm font-semibold text-gold"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Editing Pro</div>
-          <div class="glass px-4 py-2 rounded-xl text-sm font-semibold text-gold"><i class="fa-solid fa-credit-card mr-2"></i>Global Payments</div>
-        </div>
-
-        <div class="flex flex-wrap justify-center gap-4">
-          <button onclick="showView('store')" class="bg-gold text-black font-bold px-8 py-3 rounded-2xl shadow-goldGlow hover:scale-105 hover:shadow-goldGlowStrong transition">
-            <i class="fa-solid fa-bag-shopping mr-2"></i>Shop Now
-          </button>
-          <a href="https://t.me/Thomas_Shops" target="_blank" class="glass px-8 py-3 rounded-2xl font-bold hover:text-gold transition">
-            <i class="fa-brands fa-telegram mr-2"></i>Contact Admin
-          </a>
-        </div>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mt-14">
-        <div class="glass rounded-3xl p-6">
-          <h3 class="text-xl font-bold text-gold mb-4"><i class="fa-regular fa-clock mr-2"></i>Shop Opening Time</h3>
-          <div class="space-y-2 text-gray-300">
-            <div class="flex justify-between border-b border-white/5 pb-2"><span>Mon - Fri</span><span>4:30 PM - 12:00 AM</span></div>
-            <div class="flex justify-between border-b border-white/5 pb-2"><span>Saturday</span><span>9:30 AM - 12:00 AM</span></div>
-            <div class="flex justify-between"><span>Sunday</span><span class="text-red-400">OFF</span></div>
+          <div class="mt-8 grid gap-3 sm:grid-cols-3">
+            <div class="glass rounded-2xl p-4 text-left">
+              <p class="text-2xl font-bold text-gold">24/7</p>
+              <p class="mt-1 text-sm text-slate-400">Support</p>
+            </div>
+            <div class="glass rounded-2xl p-4 text-left">
+              <p class="text-2xl font-bold text-gold">100%</p>
+              <p class="mt-1 text-sm text-slate-400">Secure Payments</p>
+            </div>
+            <div class="glass rounded-2xl p-4 text-left">
+              <p class="text-2xl font-bold text-gold">Instant</p>
+              <p class="mt-1 text-sm text-slate-400">Delivery</p>
+            </div>
           </div>
         </div>
 
-        <div class="glass rounded-3xl p-6 border-l-4 border-gold">
-          <h3 class="text-xl font-bold text-gold mb-4"><i class="fa-solid fa-circle-exclamation mr-2"></i>Important Notes</h3>
-          <div class="space-y-2 text-gray-300 text-sm">
-            <p>လိုချင်တဲ့ Digital Product ကိုရေးပေးပါ။</p>
-            <p>ငွေလွှဲပြီးပါက Screenshot ပြပေးပါ။</p>
-            <p>Account Error ရှိပါက ချက်ချင်း ဆက်သွယ်ပေးပါ။</p>
+        <div class="reveal glass-strong rounded-[32px] p-6 sm:p-8">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Service status</p>
+              <h2 class="mt-2 text-2xl font-bold text-gold">Open & Ready</h2>
+            </div>
+            <div class="rounded-full border border-gold/20 bg-yellow-400/10 px-3 py-1 text-xs font-semibold text-gold">
+              <i class="fa-solid fa-circle-dot mr-2"></i>Online now
+            </div>
+          </div>
+
+          <div class="mt-8 grid gap-3">
+            <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+              <i class="fa-regular fa-clock text-gold"></i>
+              <span>Mon - Fri: 4:30 PM - 12:00 AM</span>
+            </div>
+            <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+              <i class="fa-regular fa-clock text-gold"></i>
+              <span>Saturday: 9:30 AM - 12:00 AM</span>
+            </div>
+            <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+              <i class="fa-solid fa-circle-exclamation text-red-400"></i>
+              <span>Sunday: Off</span>
+            </div>
+          </div>
+
+          <div class="mt-8 rounded-[24px] border border-yellow-400/10 bg-black/40 p-5">
+            <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Trusted payment methods</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-gold"><i class="fa-solid fa-building-columns mr-2"></i>KBZPay</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-gold"><i class="fa-solid fa-wave-square mr-2"></i>WavePay</span>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-gold"><i class="fa-brands fa-telegram mr-2"></i>Telegram Order</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <section class="reveal mt-20 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div class="glass rounded-[28px] p-8">
+          <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Why buyers choose us</p>
+          <h3 class="mt-3 text-3xl font-bold text-white">Luxury service, premium standards.</h3>
+          <p class="mt-4 max-w-xl text-base leading-8 text-slate-400">
+            Every step is designed to feel effortless, private, and dependable — from product selection to secure payment and instant support.
+          </p>
+
+          <div class="mt-8 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div class="mb-3 text-2xl text-gold"><i class="fa-solid fa-bolt"></i></div>
+              <h4 class="font-semibold text-white">Fast Delivery</h4>
+              <p class="mt-2 text-sm text-slate-400">Quick processing and reliable access.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div class="mb-3 text-2xl text-gold"><i class="fa-solid fa-shield-halved"></i></div>
+              <h4 class="font-semibold text-white">Secure Payments</h4>
+              <p class="mt-2 text-sm text-slate-400">Protected transaction paths and trusted support.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div class="mb-3 text-2xl text-gold"><i class="fa-solid fa-check-double"></i></div>
+              <h4 class="font-semibold text-white">Warranty Ready</h4>
+              <p class="mt-2 text-sm text-slate-400">Warrantied products and clear replacement support.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div class="mb-3 text-2xl text-gold"><i class="fa-solid fa-headset"></i></div>
+              <h4 class="font-semibold text-white">24/7 Support</h4>
+              <p class="mt-2 text-sm text-slate-400">Friendly help anytime you need it.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-[28px] p-8">
+          <div class="flex items-end justify-between gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Popular categories</p>
+              <h3 class="mt-2 text-3xl font-bold text-white">Curated collections.</h3>
+            </div>
+            <button onclick="showView('store')" class="text-sm font-semibold text-gold transition hover:text-yellow-300">Browse all</button>
+          </div>
+          <div id="category-preview-grid" class="mt-8 grid gap-4 sm:grid-cols-2"></div>
+        </div>
+      </section>
+
+      <!-- Price List: Added by assistant -->
+      <section id="price-list" class="reveal mt-12 glass rounded-[28px] p-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Price List</p>
+            <h3 class="mt-2 text-2xl font-bold text-white">Current Prices (Ks)</h3>
+          </div>
+          <div class="text-sm text-slate-400">Updated</div>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h4 class="font-semibold text-white">General Subscriptions</h4>
+            <ul class="mt-3 text-sm text-slate-300 space-y-1">
+              <li>1 Month — 10,000 Ks</li>
+              <li>3 Months — 15,000 Ks</li>
+              <li>6 Months — 20,000 Ks</li>
+              <li>1 Year — 25,000 Ks</li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h4 class="font-semibold text-white">SCRIBD</h4>
+            <ul class="mt-3 text-sm text-slate-300 space-y-1">
+              <li>Private — 18,000 Ks / 2 Months</li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h4 class="font-semibold text-white">Payment Accounts</h4>
+            <ul class="mt-3 text-sm text-slate-300 space-y-1">
+              <li>PayPal (Personal Account) — 66,000 Ks</li>
+              <li>Wise (Verified Account) — 1,678,000 Ks</li>
+              <li>Payoneer (Verified Account) — 2,455,000 Ks</li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h4 class="font-semibold text-white">Social Media & Accounts</h4>
+            <ul class="mt-3 text-sm text-slate-300 space-y-1">
+              <li>TikTok Japan (1 Account) — 25,000 Ks</li>
+              <li>Telegram Premium — 1 Month: 26,000 Ks</li>
+              <li>Telegram Premium — 1 Year: 143,000 Ks</li>
+              <li>Telegram Premium — 3 Months Gift: 67,500 Ks</li>
+              <li>Telegram Premium — 6 Months Gift: 89,500 Ks</li>
+              <li>Telegram Premium — 12 Months Gift: 155,000 Ks</li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h4 class="font-semibold text-white">Advanced AI Video Tools</h4>
+            <ul class="mt-3 text-sm text-slate-300 space-y-1">
+              <li>HeyGen Creator — Shared Mail: 65,000 Ks / Month</li>
+              <li>HeyGen Creator — Private Mail: 175,000 Ks / Month</li>
+              <li>Runway Standard — Private Mail: 100,000 Ks / Month</li>
+              <li>Runway Pro — Private Mail: 130,000 Ks / Month</li>
+              <li>Runway Unlimited — Private Mail: 360,000 Ks / Month</li>
+              <li>ElevenLabs Creators — Private Mail: 80,000 Ks / Month</li>
+              <li>ElevenLabs Creators — Private Mail: 170,000 Ks / 3 Months</li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h4 class="font-semibold text-white">Developer Tools</h4>
+            <ul class="mt-3 text-sm text-slate-300 space-y-1">
+              <li>GitHub Copilot Student Account — Private Mail: 100,000 Ks / Month</li>
+              <li>Replit Private Plan — 81,000 Ks / Month</li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h4 class="font-semibold text-white">Boosting Services</h4>
+            <ul class="mt-3 text-sm text-slate-300 space-y-1">
+              <li>Facebook Boosting — 1,000 Followers: 9,000 Ks</li>
+              <li>Facebook Boosting — 1,000 Likes: 20,000 Ks</li>
+              <li>Facebook Boosting — 1,000 Reactions: 20,000 Ks</li>
+              <li>Facebook Boosting — 1,000 Joins: 120,000 Ks</li>
+              <li>Instagram Boosting — 1,000 Followers: 30,000 Ks</li>
+              <li>Instagram Boosting — 1,000 Likes: 15,000 Ks</li>
+              <li>Instagram Boosting — 1,000 Comments: 25,000 Ks</li>
+              <li>TikTok Boosting — 1,000 Followers / Likes / Shares / Views: 25,000 Ks</li>
+              <li>Telegram Boosting — 1,000 Views: 1,000 Ks</li>
+              <li>Telegram Boosting — 10,000 Views: 10,000 Ks</li>
+              <li>Telegram Boosting — 100,000 Views: 15,000 Ks</li>
+              <li>Telegram Boosting — 1,000 Reactions: 1,000 Ks</li>
+              <li>Telegram Boosting — 10,000 Reactions: 14,000 Ks</li>
+              <li>Telegram Boosting — 1,000 Members: 15,000 Ks</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section class="reveal mt-20 rounded-[32px] border border-white/10 bg-black/30 p-8 sm:p-10">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Featured products</p>
+            <h3 class="mt-2 text-3xl font-bold text-white">Selected for speed, quality, and trust.</h3>
+          </div>
+          <button onclick="showView('store')" class="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-4 py-2 text-sm font-semibold text-gold transition hover:text-yellow-300">Open full catalog</button>
+        </div>
+        <div id="featured-products-grid" class="mt-8 grid gap-6 lg:grid-cols-3"></div>
+      </section>
     </section>
 
     <section id="view-store" class="hidden-view fade-in">
-      <div class="text-center mb-8">
-        <h2 class="text-3xl md:text-4xl font-bold">Premium <span class="text-gold">Store</span></h2>
+      <div class="reveal flex flex-col gap-6 rounded-[32px] border border-white/10 bg-black/30 p-6 sm:p-8 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Premium catalog</p>
+          <h2 class="mt-3 text-3xl font-bold text-white sm:text-4xl">Trusted digital access, beautifully organized.</h2>
+          <p class="mt-3 max-w-2xl text-base leading-8 text-slate-400">Search instantly, filter by category, compare plans, and add premium subscriptions straight into your order.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <span class="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-sm font-semibold text-gold">Instant access</span>
+          <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-300">24/7 support</span>
+          <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-300">Best value</span>
+        </div>
       </div>
 
-      <div id="category-filters" class="flex flex-wrap justify-center gap-2 mb-8"></div>
-      <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"></div>
+      <div class="reveal mt-8 flex flex-col gap-4 rounded-[28px] border border-white/10 bg-black/20 p-4 lg:flex-row lg:items-center lg:justify-between lg:p-6">
+        <div class="flex flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+          <i class="fa-solid fa-magnifying-glass text-gold"></i>
+          <input id="search-input" type="text" placeholder="Search products, categories, or plans" class="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500" aria-label="Search products" />
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <select id="sort-select" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-300 outline-none" aria-label="Sort products">
+            <option value="popularity">Popular</option>
+            <option value="trend">Trend</option>
+            <option value="most-sale">Most Sale</option>
+            <option value="a-z">A to Z</option>
+            <option value="vpn-end">VPN to End</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="category-filters" class="reveal mt-6 flex flex-wrap gap-2"></div>
+      <div id="products-grid" class="reveal mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3"></div>
     </section>
 
-    <section id="view-detail" class="hidden-view fade-in max-w-5xl mx-auto">
-      <button onclick="showView('store')" class="mb-6 text-gray-400 hover:text-gold transition">
-        <i class="fa-solid fa-arrow-left mr-2"></i>Back to Store
+    <section id="view-detail" class="hidden-view fade-in">
+      <button onclick="showView('store')" class="mb-6 text-sm font-semibold text-slate-400 transition hover:text-gold">
+        <i class="fa-solid fa-arrow-left mr-2"></i>Back to catalog
       </button>
 
-      <div class="glass rounded-3xl p-6 md:p-8 mb-8 flex flex-col md:flex-row gap-6 items-center border-t-4 border-gold">
-        <div class="w-28 h-28 md:w-32 md:h-32 rounded-[28px] bg-cardBlack border border-yellow-400/15 overflow-hidden flex items-center justify-center shadow-goldGlow">
-          <img id="detail-img" src="" alt="" class="w-full h-full object-cover">
-          <i id="detail-icon" class="fa-solid fa-box text-gold text-5xl hidden"></i>
+      <div class="grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
+        <div class="glass rounded-[32px] p-6 sm:p-8">
+          <div class="flex flex-wrap items-center gap-3">
+            <span id="detail-category" class="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-gold"></span>
+            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Premium product</span>
+          </div>
+          <div class="mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
+            <div class="flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-[28px] border border-yellow-400/15 bg-black/70 shadow-goldGlow">
+              <img id="detail-img" src="" alt="" class="h-full w-full object-cover">
+              <i id="detail-icon" class="fa-solid fa-box text-5xl text-gold hidden"></i>
+            </div>
+            <div>
+              <h2 id="detail-name" class="text-3xl font-bold tracking-tight text-white"></h2>
+              <p id="detail-desc" class="mt-3 max-w-2xl text-base leading-8 text-slate-400"></p>
+              <div id="detail-badges" class="mt-5 flex flex-wrap gap-2"></div>
+            </div>
+          </div>
+
+          <div class="mt-10 rounded-[24px] border border-white/10 bg-black/40 p-6">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xl font-semibold text-white">Available plans</h3>
+              <p class="text-sm text-slate-400">Select quantity and add to order</p>
+            </div>
+            <div id="plans-container" class="mt-6 space-y-4"></div>
+          </div>
         </div>
 
-        <div class="text-center md:text-left">
-          <h2 id="detail-name" class="text-3xl md:text-4xl font-bold mb-2 tracking-tight"></h2>
-          <p id="detail-desc" class="text-gray-400 text-sm md:text-base"></p>
-        </div>
+        <aside class="glass rounded-[32px] p-6 sm:p-8 xl:sticky xl:top-24 xl:h-fit">
+          <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Quick summary</p>
+          <h3 class="mt-3 text-2xl font-bold text-white">Everything you need before checkout.</h3>
+          <div class="mt-8 space-y-4 text-sm text-slate-400">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="font-semibold text-white">Warranty</p>
+              <p class="mt-2">Coverage included across premium products and plans.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="font-semibold text-white">Delivery</p>
+              <p class="mt-2">Fast access and clear handoff instructions from the admin team.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="font-semibold text-white">Support</p>
+              <p class="mt-2">Real-time guidance for setup, access, or payment questions.</p>
+            </div>
+          </div>
+          <div class="mt-8 rounded-[24px] border border-yellow-400/15 bg-yellow-400/10 p-5 text-sm text-slate-300">
+            <p class="font-bold text-gold">Need help picking a plan?</p>
+            <p class="mt-2">Message the admin directly for the most suitable option for your use case.</p>
+          </div>
+        </aside>
       </div>
-
-      <h3 class="text-2xl font-bold mb-5 border-l-4 border-gold pl-3">Choose Plan</h3>
-      <div id="plans-container" class="space-y-4"></div>
     </section>
 
     <section id="view-review" class="hidden-view fade-in">
-      <div class="text-center mb-10">
-        <h2 class="text-3xl md:text-4xl font-bold">Verified <span class="text-gold">Reviews</span></h2>
+      <div class="text-center">
+        <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Verified reviews</p>
+        <h2 class="mt-3 text-3xl font-bold text-white sm:text-4xl">Trusted by creators, founders, and modern teams.</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-400">The experience is built to feel calm, clear, and high-confidence at every touchpoint.</p>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="glass rounded-3xl p-6">
-          <div class="text-gold mb-2">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <h4 class="font-bold text-lg">Ko Aung</h4>
-          <p class="text-gray-400 text-sm mt-2">အရမ်းမြန်တယ်။ Service လည်း အဆင်ပြေတယ်။</p>
+      <div class="mt-10 grid gap-6 lg:grid-cols-3">
+        <div class="glass rounded-[28px] p-6">
+          <div class="mb-3 text-gold"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <h3 class="text-xl font-semibold text-white">Ko Aung</h3>
+          <p class="mt-3 text-sm leading-7 text-slate-400">“The buying flow felt premium and the delivery was extremely fast. I would absolutely use it again.”</p>
         </div>
-
-        <div class="glass rounded-3xl p-6">
-          <div class="text-gold mb-2">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <h4 class="font-bold text-lg">Su Myat</h4>
-          <p class="text-gray-400 text-sm mt-2">ယုံကြည်စိတ်ချရတဲ့ admin ပါ။</p>
+        <div class="glass rounded-[28px] p-6">
+          <div class="mb-3 text-gold"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <h3 class="text-xl font-semibold text-white">Su Myat</h3>
+          <p class="mt-3 text-sm leading-7 text-slate-400">“Everything feels polished and dependable. It’s one of the cleanest reseller experiences I’ve seen.”</p>
         </div>
-
-        <div class="glass rounded-3xl p-6">
-          <div class="text-gold mb-2">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <h4 class="font-bold text-lg">Zaw Min</h4>
-          <p class="text-gray-400 text-sm mt-2">Premium တွေသုံးရတာ အရမ်းအဆင်ပြေတယ်။</p>
+        <div class="glass rounded-[28px] p-6">
+          <div class="mb-3 text-gold"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <h3 class="text-xl font-semibold text-white">Zaw Min</h3>
+          <p class="mt-3 text-sm leading-7 text-slate-400">“The product selection matches my workflow perfectly and the support is genuinely attentive.”</p>
         </div>
       </div>
     </section>
 
     <section id="view-receipt" class="hidden-view fade-in max-w-3xl mx-auto">
-      <div class="glass rounded-3xl p-8 border border-yellow-400/15">
-        <div class="text-center mb-8 border-b border-white/10 pb-6">
+      <div class="glass rounded-[32px] border border-yellow-400/15 p-8 sm:p-10">
+        <div class="text-center">
           <h2 class="text-2xl font-bold text-gold">THOMAS DIGITAL RESELLER</h2>
-          <p class="text-gray-400 text-sm">Order Receipt</p>
+          <p class="mt-2 text-sm text-slate-400">Order receipt</p>
         </div>
-
-        <div id="receipt-items" class="space-y-4 mb-8"></div>
-
-        <div class="border-t border-white/10 pt-6 flex justify-between items-end mb-8">
-          <span class="text-gray-400">Total Amount</span>
+        <div id="receipt-items" class="mt-8 space-y-4"></div>
+        <div class="mt-8 flex items-end justify-between border-t border-white/10 pt-6">
+          <span class="text-slate-400">Total</span>
           <span id="receipt-total" class="text-3xl font-bold text-gold">0 Ks</span>
         </div>
-
-        <div class="grid md:grid-cols-2 gap-4">
-          <button id="copy-order-btn" onclick="copyOrderInfo()" class="glass py-3 rounded-2xl hover:text-gold transition flex justify-center items-center gap-2">
-  <i class="fa-solid fa-copy"></i>
-  <span id="copy-order-btn-text">Copy Order Info</span>
-</button>
-
-          <button onclick="messageAdmin()" class="bg-gold text-black py-3 rounded-2xl font-bold hover:shadow-goldGlow transition flex justify-center items-center gap-2">
+        <div class="mt-8 grid gap-3 md:grid-cols-2">
+          <button id="copy-order-btn" onclick="copyOrderInfo()" class="flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:text-gold">
+            <i class="fa-solid fa-copy"></i>
+            <span id="copy-order-btn-text">Copy Order Info</span>
+          </button>
+          <button onclick="messageAdmin()" class="flex items-center justify-center gap-2 rounded-2xl bg-gold px-4 py-3 text-sm font-semibold text-black transition hover:shadow-goldGlow">
             <i class="fa-brands fa-telegram"></i>Message Admin
           </button>
-
-          <button onclick="resetCartAndGoStore()" class="md:col-span-2 glass py-3 rounded-2xl hover:text-white transition">
-            Back to Store
+          <button onclick="resetCartAndGoStore()" class="md:col-span-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:text-gold">
+            Back to catalog
           </button>
         </div>
       </div>
     </section>
   </main>
 
-  <div id="cart-bar" class="fixed bottom-0 left-0 right-0 z-40 translate-y-full transition-transform duration-300">
-    <div class="bg-black/95 border-t border-yellow-400/25 p-4">
-      <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-  <button onclick="clearCart()" class="w-10 h-10 rounded-xl glass hover:text-red-400 transition">
-    <i class="fa-solid fa-trash"></i>
-  </button>
-  <div>
-    <p class="text-gray-500 text-xs uppercase tracking-widest">Total</p>
-    <p id="cart-total" class="text-2xl font-bold text-gold">0 Ks</p>
-  </div>
-</div>
+  <footer class="mx-auto max-w-7xl border-t border-white/10 px-4 py-12 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-8 rounded-[32px] border border-white/10 bg-black/30 p-8 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.35em] text-slate-500">Thomas Digital Reseller</p>
+        <h3 class="mt-3 text-2xl font-bold text-white">Premium digital access with a luxury customer experience.</h3>
+        <p class="mt-3 max-w-xl text-base leading-8 text-slate-400">For reliable service, premium selection, and effortless checkout, trust THOMAS DIGITAL RESELLER.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://t.me/Thomas_Shops" target="_blank" class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:text-gold">Telegram</a>
+        <a href="#" class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:text-gold">Facebook</a>
+        <a href="#" class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:text-gold">Newsletter</a>
+      </div>
+    </div>
+  </footer>
 
-<button onclick="openPaymentModal()" class="bg-gold text-black px-6 md:px-8 py-3 rounded-2xl font-bold transition">
-  Checkout <i class="fa-solid fa-chevron-right ml-1"></i>
-</button>
+  <div id="cart-bar" class="fixed bottom-0 left-0 right-0 z-40 translate-y-full transition-transform duration-300">
+    <div class="border-t border-yellow-400/25 bg-black/95 p-4">
+      <div class="mx-auto flex max-w-4xl items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <button onclick="clearCart()" class="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition hover:text-red-400">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.35em] text-slate-500">Total</p>
+            <p id="cart-total" class="text-2xl font-bold text-gold">0 Ks</p>
+          </div>
+        </div>
+        <button onclick="openPaymentModal()" class="rounded-2xl bg-gold px-6 py-3 text-sm font-semibold text-black transition hover:shadow-goldGlow md:px-8">
+          Checkout <i class="fa-solid fa-chevron-right ml-1"></i>
+        </button>
       </div>
     </div>
   </div>
 
-  <div id="payment-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden opacity-0 pointer-events-none items-center justify-center p-4 transition duration-200">
-    <div class="glass w-full max-w-2xl rounded-3xl p-8 relative">
-      <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gold text-xl">
+  <div id="payment-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 p-4 opacity-0 backdrop-blur-sm transition duration-200 pointer-events-none">
+    <div class="relative w-full max-w-2xl rounded-[32px] border border-yellow-400/15 bg-black/90 p-8">
+      <button onclick="closePaymentModal()" class="absolute right-4 top-4 text-xl text-slate-400 transition hover:text-gold">
         <i class="fa-solid fa-xmark"></i>
       </button>
-
-      <div class="text-center mb-8">
-        <div class="text-gold text-5xl mb-4"><i class="fa-solid fa-building-columns"></i></div>
-        <h2 class="text-3xl font-bold">Payment Instructions</h2>
-        <p class="text-gray-400 mt-2">ကျေးဇူးပြု၍ အောက်ပါအကောင့်များသို့ ငွေလွှဲပေးပါ။</p>
+      <div class="text-center">
+        <div class="mb-4 text-5xl text-gold"><i class="fa-solid fa-building-columns"></i></div>
+        <h2 class="text-3xl font-bold text-white">Payment Instructions</h2>
+        <p class="mt-2 text-sm text-slate-400">ကျေးဇူးပြု၍ အောက်ပါအကောင့်များသို့ ငွေလွှဲပေးပါ။</p>
       </div>
-
-      <div class="space-y-4">
-        <div class="glass rounded-2xl p-4 flex justify-between items-center border-l-4 border-gold">
+      <div class="mt-8 space-y-4">
+        <div class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-4">
           <div>
-            <p class="text-sm text-gray-400">KBZPay</p>
-            <p class="font-bold text-lg">09 6500 23587</p>
-            <p class="text-xs text-gray-500">YEL THWAY AUNG</p>
+            <p class="text-sm text-slate-400">KBZPay</p>
+            <p class="text-lg font-bold text-white">09 6500 23587</p>
+            <p class="text-xs text-slate-500">YEL THWAY AUNG</p>
           </div>
-          <button onclick="copyText('09650023587')" class="text-gray-400 hover:text-gold">
-            <i class="fa-solid fa-copy"></i>
-          </button>
+          <button onclick="copyText('09650023587')" class="text-slate-400 transition hover:text-gold"><i class="fa-solid fa-copy"></i></button>
         </div>
-
-        <div class="glass rounded-2xl p-4 flex justify-between items-center border-l-4 border-gold">
+        <div class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-4">
           <div>
-            <p class="text-sm text-gray-400">Wave Pay</p>
-            <p class="font-bold text-lg">09 7584 87380</p>
-            <p class="text-xs text-gray-500">Ye Thway Aung</p>
+            <p class="text-sm text-slate-400">WavePay</p>
+            <p class="text-lg font-bold text-white">09 7584 87380</p>
+            <p class="text-xs text-slate-500">Ye Thway Aung</p>
           </div>
-          <button onclick="copyText('09758487380')" class="text-gray-400 hover:text-gold">
-            <i class="fa-solid fa-copy"></i>
-          </button>
+          <button onclick="copyText('09758487380')" class="text-slate-400 transition hover:text-gold"><i class="fa-solid fa-copy"></i></button>
         </div>
       </div>
-
-      <button onclick="processReceipt()" class="w-full mt-8 bg-gold text-black py-4 rounded-2xl font-bold hover:shadow-goldGlow transition">
+      <button onclick="processReceipt()" class="mt-8 w-full rounded-2xl bg-gold px-4 py-4 text-sm font-semibold text-black transition hover:shadow-goldGlow">
         I Understand & Proceed
       </button>
     </div>
@@ -352,10 +639,338 @@
         img: "https://static.vecteezy.com/system/resources/previews/024/558/807/non_2x/openai-chatgpt-logo-icon-free-png.png",
         icon: "fa-robot",
         plans: [
-          { id: "chatgpt-1", title: "Personal Plus", subtitle: "1 Device (Private)", duration: "1 Month", price: 32000 },
-          { id: "chatgpt-2", title: "Business Plus", subtitle: "Invite Own Mail", duration: "1 Month", price: 240000 },
-          { id: "chatgpt-3", title: "Business Plus", subtitle: "Own", duration: "1 Month", price: 40000 },
-          { id: "chatgpt-4", title: "Business Plus", subtitle: "Own (Full Warranty)", duration: "1 Month", price: 44000 }
+          { id: "chatgpt-1", title: "Personal Plus", subtitle: "1 Device (Private)", duration: "1 Month", price: 150000 },
+          { id: "chatgpt-2", title: "Business Plus", subtitle: "Invite Own Mail", duration: "1 Month", price: 150000 },
+          { id: "chatgpt-3", title: "Business Plus", subtitle: "Own", duration: "1 Month", price: 150000 },
+          { id: "chatgpt-4", title: "Business Plus", subtitle: "Own (Full Warranty)", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "github-copilot",
+        cat: "AI Tools",
+        name: "GitHub Copilot Student Account",
+        desc: "Developer coding companion",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlQwjtgZ3f0jNiLNPzzgUhBKM5dMifn6JhInPQC2YDTw&s=10",
+        icon: "fa-terminal",
+        plans: [
+          { id: "github-copilot-1", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "grok-ai",
+        cat: "AI Tools",
+        name: "Grok AI – Super Grok 4",
+        desc: "Premium AI assistant access",
+        img: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/grok-icon.png",
+        icon: "fa-robot",
+        plans: [
+          { id: "grok-1", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "gemini-ultra",
+        cat: "AI Tools",
+        name: "Gemini Ultra",
+        desc: "Ultra Google AI plan",
+        img: "https://helios-i.mashable.com/imagery/articles/00zEnhbB6mXQs8x5yXw38bT/images-3.fit_lim.size_376x.webp",
+        icon: "fa-sparkles",
+        plans: [
+          { id: "gemini-ultra-1", title: "1 Month", subtitle: "Bad Quota", duration: "1 Month", price: 150000 },
+          { id: "gemini-ultra-2", title: "1 Month", subtitle: "Good Quota", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "humanizer-basic",
+        cat: "AI Tools",
+        name: "AI Humanizer Basic Plan",
+        desc: "Basic humanizer access",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj-F9zAl6lrd1zQOVEo9i9nPwLcu5is0-ZwG6iYqIU65ZV-_V-5AGLFXw&s=10",
+        icon: "fa-user-shield",
+        plans: [
+          { id: "humanizer-basic-1", title: "1 Month", subtitle: "Basic", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "humanizer-pro",
+        cat: "AI Tools",
+        name: "AI Humanizer Pro Plan",
+        desc: "Pro humanizer access",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj-F9zAl6lrd1zQOVEo9i9nPwLcu5is0-ZwG6iYqIU65ZV-_V-5AGLFXw&s=10",
+        icon: "fa-user-shield",
+        plans: [
+          { id: "humanizer-pro-1", title: "1 Month", subtitle: "Pro", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "manus-ai",
+        cat: "AI Tools",
+        name: "Manus AI Top Up",
+        desc: "Top up points for Manus AI",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxAKUq6Rccszye7_A0btDF0IwRa2B6ijKFuanlrxQ5GUV4XBl8eHhGQcI2&s=10",
+        icon: "fa-coins",
+        plans: [
+          { id: "manus-1", title: "Top Up", subtitle: "1,000 Points", duration: "One-time", price: 150000 },
+          { id: "manus-2", title: "Top Up", subtitle: "3,000 Points", duration: "One-time", price: 150000 }
+        ]
+      },
+      {
+        id: "lovable-pro",
+        cat: "AI Tools",
+        name: "Lovable Pro Lite",
+        desc: "1 year access with bonus credits",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTan5yMUU9a88amDDVS6CK9zgxpekPIiZMNRtwua3kfTeGVjkmBq6qONHA&s=10",
+        icon: "fa-star",
+        plans: [
+          { id: "lovable-1", title: "1 Year", subtitle: "Pro Lite", duration: "1 Year", price: 150000 }
+        ]
+      },
+      {
+        id: "kling-ai",
+        cat: "AI Tools",
+        name: "Kling AI",
+        desc: "AI video generation plan",
+        img: "https://cdn.aptoide.com/imgs/3/2/6/32675727cea4237cc8b7061028309671_icon.png",
+        icon: "fa-video",
+        plans: [
+          { id: "kling-1", title: "Standard", subtitle: "+500 Credit", duration: "1 Month", price: 150000 },
+          { id: "kling-2", title: "Standard", subtitle: "+1100 Credit", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "higgsfield-ai",
+        cat: "AI Tools",
+        name: "Higgsfield AI Starter",
+        desc: "AI media starter access",
+        img: "https://play-lh.googleusercontent.com/vIxo0YfyjtSZ4G-e4GRYVaRuRWh6_8DK2HbMMy671jZJzLRNvhy0475HfXsOjF50j--mUwBq2k2dW2cA5eIJ=w240-h480-rw",
+        icon: "fa-wand-magic-sparkles",
+        plans: [
+          { id: "higgsfield-1", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 140000 }
+        ]
+      },
+      {
+        id: "facebook-boosting",
+        cat: "Boosting Services",
+        name: "Facebook Boosting",
+        desc: "Followers, likes, reactions, joins",
+        img: "https://img.magnific.com/premium-vector/vector-facebook-social-media-icon-illustration_534308-21672.jpg?semt=ais_hybrid&w=740&q=80",
+        icon: "fa-square-facebook",
+        plans: [
+          { id: "facebook-boosting-1", title: "Followers", subtitle: "1,000 Followers", duration: "One-time", price: 24000 },
+          { id: "facebook-boosting-2", title: "Likes", subtitle: "1,000 Likes", duration: "One-time", price: 24000 },
+          { id: "facebook-boosting-3", title: "Reactions", subtitle: "1,000 Reactions", duration: "One-time", price: 24000 },
+          { id: "facebook-boosting-4", title: "Joins", subtitle: "1,000 Joins", duration: "One-time", price: 85000 }
+        ]
+      },
+      {
+        id: "instagram-boosting",
+        cat: "Boosting Services",
+        name: "Instagram Boosting",
+        desc: "Followers, likes, comments",
+        img: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png",
+        icon: "fa-instagram",
+        plans: [
+          { id: "instagram-boosting-1", title: "Followers", subtitle: "1,000 Followers", duration: "One-time", price: 30000 },
+          { id: "instagram-boosting-2", title: "Likes", subtitle: "1,000 Likes", duration: "One-time", price: 24000 },
+          { id: "instagram-boosting-3", title: "Comments", subtitle: "1,000 Comments", duration: "One-time", price: 25000 }
+        ]
+      },
+      {
+        id: "tiktok-boosting",
+        cat: "Boosting Services",
+        name: "TikTok Boosting",
+        desc: "Followers, likes, shares, views",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwP_xYoZXiun-nIMqWYXNw7myZVEJLoIx5GttxjWhrYUqTUMswXqlqW7c&s=10",
+        icon: "fa-music",
+        plans: [
+          { id: "tiktok-boosting-1", title: "Followers", subtitle: "1,000 Followers", duration: "One-time", price: 26000 },
+          { id: "tiktok-boosting-2", title: "Likes", subtitle: "1,000 Likes", duration: "One-time", price: 24000 },
+          { id: "tiktok-boosting-3", title: "Shares", subtitle: "1,000 Shares", duration: "One-time", price: 24000 },
+          { id: "tiktok-boosting-4", title: "Views", subtitle: "1,000 Views", duration: "One-time", price: 20000 }
+        ]
+      },
+      {
+        id: "grammarly-ai",
+        cat: "AI Tools",
+        name: "Grammarly AI",
+        desc: "AI writing assistant",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMlMLMmtiVVVTPCJEK1WmGVhqdfG90BNyDiMP6sjZuww&s=10",
+        icon: "fa-pen-nib",
+        plans: [
+          { id: "grammarly-ai-1", title: "1 Month", subtitle: "Share Plan", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "flow-ai",
+        cat: "AI Tools",
+        name: "Flow AI",
+        desc: "AI productivity tool",
+        img: "https://play-lh.googleusercontent.com/kmFu6XMfAt0K3G7VdmBMuNXw6qRu1IyhxSTFKLWTyS3l7by4gRa92IaEb76Xuz2J8Q=w240-h480-rw",
+        icon: "fa-wind",
+        plans: [
+          { id: "flow-ai-1", title: "OwnMail Invite", subtitle: "Powered by GoogleOne Gemini", duration: "3 Months", price: 150000 },
+          { id: "flow-ai-2", title: "Private", subtitle: "Powered by GoogleOne Gemini", duration: "3 Months", price: 150000 }
+        ]
+      },
+      {
+        id: "leonardo-ai",
+        cat: "AI Tools",
+        name: "Leonardo AI",
+        desc: "Image generation and creative tools",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfk0Fcd81Y9ModdJzsRWubuNvz_arjOl9eg1Ty_rRo_nPRXeUEQ7VWoYM&s=10",
+        icon: "fa-image",
+        plans: [
+          { id: "leonardo-ai-1", title: "1 Month", subtitle: "Own Mail", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "consensus-ai",
+        cat: "AI Tools",
+        name: "Consensus AI Premium",
+        desc: "Premium research assistant access",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxxEwbm_tI_Mzix8UntEQtqs_B-kBV3fmg2fJWUG7aWvm8AV426xGhgX6X&s=10",
+        icon: "fa-magnifying-glass-chart",
+        plans: [
+          { id: "consensus-ai-1", title: "3 Months", subtitle: "Private Mail", duration: "3 Months", price: 150000 }
+        ]
+      },
+      {
+        id: "cursor-ai",
+        cat: "AI Tools",
+        name: "Cursor AI Pro",
+        desc: "Advanced coding assistant subscription",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSRALf_akxv7OzU0BtNqUPmtDKM4iABbtc_Dc_g0ghjGrE1fhhhLN0BC8&s=10",
+        icon: "fa-code",
+        plans: [
+          { id: "cursor-ai-1", title: "1 Month", subtitle: "Private Account", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "elevenlab-creators",
+        cat: "AI Tools",
+        name: "ElevenLab Creators",
+        desc: "Voice generation and creators plan",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8nohtyrHcrTxjZi2AmU3oFzX8RveJJO8yHCrlORVxiw&s=10",
+        icon: "fa-microphone",
+        plans: [
+          { id: "elevenlab-creators-1", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 150000 },
+          { id: "elevenlab-creators-2", title: "3 Months", subtitle: "Private Mail", duration: "3 Months", price: 150000 }
+        ]
+      },
+      {
+        id: "gamma-ai",
+        cat: "AI Tools",
+        name: "Gamma AI Plus",
+        desc: "AI content and productivity plan",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMeQTVO3eOMaAqEnOoywbW_nmprJptXCRimXG0J42pRA&s=10",
+        icon: "fa-file-lines",
+        plans: [
+          { id: "gamma-ai-1", title: "1 Month", subtitle: "Shared Mail", duration: "1 Month", price: 150000 },
+          { id: "gamma-ai-2", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "hedra-basic",
+        cat: "AI Tools",
+        name: "Hedra Basic",
+        desc: "AI video generation basics",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0RgVkG23zKu_5kJ2t7DsamBeqS9T29l5XmP58T22ruQ&s",
+        icon: "fa-video",
+        plans: [
+          { id: "hedra-basic-1", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "heygen-creator",
+        cat: "AI Tools",
+        name: "HeyGen Creator",
+        desc: "AI avatar creation studio",
+        img: "https://play-lh.googleusercontent.com/Zd5OkJdARrVOjTmC5oz8CVA7rahrMsDYZz28V87o2Ah8NjIUwMBhQ4CKXzlfrkn9DT1nPLgm60Xx_ZtGmzjIbw=w240-h480-rw",
+        icon: "fa-user-tie",
+        plans: [
+          { id: "heygen-creator-1", title: "1 Month", subtitle: "Shared Mail", duration: "1 Month", price: 150000 },
+          { id: "heygen-creator-2", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "higgsfield-ai-basic",
+        cat: "AI Tools",
+        name: "Higgsfield AI Basic",
+        desc: "AI media access with 70 credits",
+        img: "https://play-lh.googleusercontent.com/vIxo0YfyjtSZ4G-e4GRYVaRuRWh6_8DK2HbMMy671jZJzLRNvhy0475HfXsOjF50j--mUwBq2k2dW2cA5eIJ=w240-h480-rw",
+        icon: "fa-wand-magic-sparkles",
+        plans: [
+          { id: "higgsfield-ai-basic-1", title: "1 Month", subtitle: "Private Mail", duration: "1 Month", price: 75000 }
+        ]
+      },
+      {
+        id: "higgsfield-ai-plus",
+        cat: "AI Tools",
+        name: "Higgsfield AI Plus",
+        desc: "AI content and media plan",
+        img: "https://play-lh.googleusercontent.com/vIxo0YfyjtSZ4G-e4GRYVaRuRWh6_8DK2HbMMy671jZJzLRNvhy0475HfXsOjF50j--mUwBq2k2dW2cA5eIJ=w240-h480-rw",
+        icon: "fa-wand-magic-sparkles",
+        plans: [
+          { id: "higgsfield-ai-plus-1", title: "1 Month", subtitle: "Shared Mail", duration: "1 Month", price: 65000 }
+        ]
+      },
+      {
+        id: "invideo-studio",
+        cat: "AI Tools",
+        name: "InVideo Studio",
+        desc: "Video editing and creation studio",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRy7up-uavVyrs9_epB-Ec13jItryLIFKgbJGDQrSq9jg&s=10",
+        icon: "fa-clapperboard",
+        plans: [
+          { id: "invideo-studio-1", title: "1 Month", subtitle: "Own Mail", duration: "1 Month", price: 150000 },
+          { id: "invideo-studio-2", title: "3 Months", subtitle: "Own Mail", duration: "3 Months", price: 150000 },
+          { id: "invideo-studio-3", title: "6 Months", subtitle: "Own Mail", duration: "6 Months", price: 150000 }
+        ]
+      },
+      {
+        id: "jenny-ai",
+        cat: "AI Tools",
+        name: "Jenny AI",
+        desc: "AI assistant and content generation",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGMm7BZNZlfiaoj8JKVOO2pl_TjbTgJ_7QtoofBZTZp-uJBWvB-GBWhzlN&s=10",
+        icon: "fa-robot",
+        plans: [
+          { id: "jenny-ai-1", title: "3 Months", subtitle: "Standard", duration: "3 Months", price: 150000 }
+        ]
+      },
+      {
+        id: "meitu-vip",
+        cat: "AI Tools",
+        name: "Meitu VIP",
+        desc: "VIP editing and beautification plan",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQztjC_a0TqP4NQoBgpJNVQyxtx5Guz6F7Vkr_tICJM6Q&s=10",
+        icon: "fa-face-smile",
+        plans: [
+          { id: "meitu-vip-1", title: "1 Month", subtitle: "Own Mail", duration: "1 Month", price: 150000 }
+        ]
+      },
+      {
+        id: "rezi-ai",
+        cat: "AI Tools",
+        name: "Rezi AI",
+        desc: "Lifetime resume and career AI tool",
+        img: "https://cdn-1.webcatalog.io/catalog/rezi/rezi-icon-filled-256.png?v=1714775678345",
+        icon: "fa-file-lines",
+        plans: [
+          { id: "rezi-ai-1", title: "Lifetime", subtitle: "Own Mail", duration: "Lifetime", price: 150000 }
+        ]
+      },
+      {
+        id: "notebooklm",
+        cat: "AI Tools",
+        name: "NotebookLM",
+        desc: "OwnMail Invite powered by GoogleOne Gemini",
+        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Notebook_icon.svg/256px-Notebook_icon.svg.png",
+        icon: "fa-note-sticky",
+        plans: [
+          { id: "notebooklm-3m", title: "3 Months", subtitle: "OwnMail Invite", duration: "3 Months", price: 25000 },
+          { id: "notebooklm-6m", title: "6 Months", subtitle: "OwnMail Invite", duration: "6 Months", price: 30000 },
+          { id: "notebooklm-9m", title: "9 Months", subtitle: "OwnMail Invite", duration: "9 Months", price: 50000 },
+          { id: "notebooklm-12m", title: "12 Months", subtitle: "OwnMail Invite", duration: "12 Months", price: 80500 }
         ]
       },
       {
@@ -366,11 +981,12 @@
         img: "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/gemini-color.png",
         icon: "fa-brain",
         plans: [
-          { id: "gemini-1", title: "Private (2TB Storage)", subtitle: "1 Month", duration: "1 Month", price: 10000 },
-          { id: "gemini-2", title: "Private (2TB Storage)", subtitle: "3 Months", duration: "3 Months", price: 20000 },
-          { id: "gemini-3", title: "Own Mail", subtitle: "1 Month", duration: "1 Month", price: 150000 },
-          { id: "gemini-4", title: "Own Mail", subtitle: "3 Months", duration: "3 Months", price: 20000 }
+          { id: "gemini-1", title: "Private (2TB Storage)", subtitle: "1 Month", duration: "1 Month", price: 140000 },
+          { id: "gemini-2", title: "Private (2TB Storage)", subtitle: "3 Months", duration: "3 Months", price: 24000 },
+          { id: "gemini-3", title: "Own Mail", subtitle: "1 Month", duration: "1 Month", price: 20000 },
+          { id: "gemini-4", title: "Own Mail", subtitle: "3 Months", duration: "3 Months", price: 31000 }
         ]
+
       },
       {
         id: "perplexity",
@@ -380,9 +996,9 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuJtpuSPxCai6OZE-p61Ivmz9A_QSa414g7Q&s",
         icon: "fa-magnifying-glass",
         plans: [
-          { id: "perplexity-1", title: "1 Month", subtitle: "1 Device (Share)", duration: "1 Month", price: 16000 },
-          { id: "perplexity-2", title: "1 Month", subtitle: "1 Device (Private)", duration: "1 Month", price: 25000 },
-          { id: "perplexity-3", title: "1 Month", subtitle: "1 Device (Own Mail)", duration: "1 Month", price: 25000 }
+          { id: "perplexity-1", title: "1 Month", subtitle: "1 Device (Share)", duration: "1 Month", price: 150000 },
+          { id: "perplexity-2", title: "1 Month", subtitle: "1 Device (Private)", duration: "1 Month", price: 150000 },
+          { id: "perplexity-3", title: "1 Month", subtitle: "1 Device (Own Mail)", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -393,18 +1009,48 @@
         img: "https://play-lh.googleusercontent.com/CnGsOmhIKfo1_IAnCUxAYXBaxkJ11rQXqPAGU_t29S6nVsrzTx-3OjMWFf2fk_b7u3g=s256-rw",
         icon: "fa-shield-halved",
         plans: [
-          { id: "express-1", title: "1 Month", subtitle: "1 Device", duration: "1 Month", price: 5000 },
-          { id: "express-2", title: "1 Month", subtitle: "2 Devices", duration: "1 Month", price: 18000 },
-          { id: "express-3", title: "1 Month", subtitle: "5 Devices", duration: "1 Month", price: 35000 },
-          { id: "express-4", title: "3 Months", subtitle: "1 Device", duration: "3 Months", price: 28000 },
-          { id: "express-5", title: "3 Months", subtitle: "2 Devices", duration: "3 Months", price: 35000 },
-          { id: "express-6", title: "3 Months", subtitle: "5 Devices", duration: "3 Months", price: 70000 },
-          { id: "express-7", title: "6 Months", subtitle: "1 Device", duration: "6 Months", price: 33000 },
-          { id: "express-8", title: "6 Months", subtitle: "2 Devices", duration: "6 Months", price: 61000 },
-          { id: "express-9", title: "6 Months", subtitle: "5 Devices", duration: "6 Months", price: 190000 },
-          { id: "express-10", title: "1 Year", subtitle: "1 Device", duration: "1 Year", price: 55000 },
-          { id: "express-11", title: "1 Year", subtitle: "2 Devices", duration: "1 Year", price: 120000 },
-          { id: "express-12", title: "1 Year", subtitle: "5 Devices", duration: "1 Year", price: 270000 }
+          { id: "express-1", title: "1 Month", subtitle: "1 Device", duration: "1 Month", price: 150000 },
+          { id: "express-2", title: "1 Month", subtitle: "2 Devices", duration: "1 Month", price: 150000 },
+          { id: "express-3", title: "1 Month", subtitle: "5 Devices", duration: "1 Month", price: 150000 },
+          { id: "express-4", title: "3 Months", subtitle: "1 Device", duration: "3 Months", price: 150000 },
+          { id: "express-5", title: "3 Months", subtitle: "2 Devices", duration: "3 Months", price: 150000 },
+          { id: "express-6", title: "3 Months", subtitle: "5 Devices", duration: "3 Months", price: 150000 },
+          { id: "express-7", title: "6 Months", subtitle: "1 Device", duration: "6 Months", price: 150000 },
+          { id: "express-8", title: "6 Months", subtitle: "2 Devices", duration: "6 Months", price: 150000 },
+          { id: "express-9", title: "6 Months", subtitle: "5 Devices", duration: "6 Months", price: 150000 },
+          { id: "express-10", title: "1 Year", subtitle: "1 Device", duration: "1 Year", price: 150000 },
+          { id: "express-11", title: "1 Year", subtitle: "2 Devices", duration: "1 Year", price: 150000 },
+          { id: "express-12", title: "1 Year", subtitle: "5 Devices", duration: "1 Year", price: 150000 }
+        ]
+      },
+      {
+        id: "letsvpn",
+        cat: "VPN",
+        name: "LetsVPN",
+        desc: "Own Mail, 2 Devices, AnyOS",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJvls8n0R1gdwurp7sDrCXWyTqU2P6UydD6_yuHjQ1ww&s",
+        icon: "fa-shield-halved",
+        plans: [
+          { id: "letsvpn-1", title: "Standard Plan", subtitle: "1 Month", duration: "1 Month", price: 70000 },
+          { id: "letsvpn-2", title: "Standard Plan", subtitle: "3 Months", duration: "3 Months", price: 140000 },
+          { id: "letsvpn-3", title: "Standard Plan", subtitle: "1 Year", duration: "1 Year", price: 350000 },
+          { id: "letsvpn-4", title: "Platinum Plan", subtitle: "1 Month", duration: "1 Month", price: 80000 },
+          { id: "letsvpn-5", title: "Platinum Plan", subtitle: "3 Months", duration: "3 Months", price: 170000 },
+          { id: "letsvpn-6", title: "Platinum Plan", subtitle: "1 Year", duration: "1 Year", price: 390000 }
+        ]
+      },
+      {
+        id: "exitlag-vpn",
+        cat: "VPN",
+        name: "ExitLag VPN",
+        desc: "VPN access with code plans",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0fb26MsTZQx2GG4OkB7cJVylaShw-_oBNkygtwGjPkA&s=10",
+        icon: "fa-shield-halved",
+        plans: [
+          { id: "exitlag-vpn-1", title: "1 Month Code", subtitle: "1 Month Code", duration: "1 Month", price: 65000 },
+          { id: "exitlag-vpn-2", title: "3 Months Code", subtitle: "3 Months Code", duration: "3 Months", price: 150000 },
+          { id: "exitlag-vpn-3", title: "1 Year Code", subtitle: "1 Year Code", duration: "1 Year", price: 470000 },
+          { id: "exitlag-vpn-4", title: "3 Months (Shared Account)", subtitle: "Shared Account", duration: "3 Months", price: 40000 }
         ]
       },
       {
@@ -415,9 +1061,9 @@
         img: "https://play-lh.googleusercontent.com/hBVHHh-aVLWPsgDP8JMqt0Ps3zkBEH-NvYuMaNOKO09oJYwSpC1Bx8WulHTaamj-Z7WF",
         icon: "fa-network-wired",
         plans: [
-          { id: "outline-1", title: "1 Month Only", subtitle: "1 Device", duration: "1 Month", price: 6000 },
-          { id: "outline-2", title: "1 Month Only", subtitle: "2 Devices", duration: "1 Month", price: 15000 },
-          { id: "outline-3", title: "1 Month Only", subtitle: "5 Devices", duration: "1 Month", price: 25000 }
+          { id: "outline-1", title: "1 Month Only", subtitle: "1 Device", duration: "1 Month", price: 150000 },
+          { id: "outline-2", title: "1 Month Only", subtitle: "2 Devices", duration: "1 Month", price: 150000 },
+          { id: "outline-3", title: "1 Month Only", subtitle: "5 Devices", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -428,9 +1074,9 @@
         img: "https://play-lh.googleusercontent.com/kVeisXWkT4oRMDsZbFrY7XXJvnxHJ7PnQFE71XCcCWAoeOAg5G3HJRDp4Ro3Xbc3WA=w240-h480-rw",
         icon: "fa-bolt",
         plans: [
-          { id: "v2box-1", title: "1 Month Only", subtitle: "1 Device", duration: "1 Month", price: 15000 },
-          { id: "v2box-2", title: "1 Month Only", subtitle: "2 Devices", duration: "1 Month", price: 20000 },
-          { id: "v2box-3", title: "1 Month Only", subtitle: "5 Devices", duration: "1 Month", price: 33000 }
+          { id: "v2box-1", title: "1 Month Only", subtitle: "1 Device", duration: "1 Month", price: 150000 },
+          { id: "v2box-2", title: "1 Month Only", subtitle: "2 Devices", duration: "1 Month", price: 150000 },
+          { id: "v2box-3", title: "1 Month Only", subtitle: "5 Devices", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -441,8 +1087,8 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCm2kKlJBjksQRTXvFYTQGbwoMpX21cqFi5g&s",
         icon: "fa-lock",
         plans: [
-          { id: "nord-1", title: "Share Plan", subtitle: "1 Year (Myanmar မသုံးမရပါ)", duration: "1 Year", price: 40000 },
-          { id: "nord-2", title: "Private Plan", subtitle: "3 Months (Myanmar မသုံးမရပါ)", duration: "3 Months", price: 36000 }
+          { id: "nord-1", title: "Share Plan", subtitle: "1 Year (Myanmar မသုံးမရပါ)", duration: "1 Year", price: 150000 },
+          { id: "nord-2", title: "Private Plan", subtitle: "3 Months (Myanmar မသုံးမရပါ)", duration: "3 Months", price: 150000 }
         ]
       },
       {
@@ -453,9 +1099,9 @@
         img: "https://images-eds-ssl.xboxlive.com/image?url=4rt9.lXDC4H_93laV1_eHHFT949fUipzkiFOBH3fAiZZUCdYojwUyX2aTonS1aIwMrx6NUIsHfUHSLzjGJFxxuO4Q1tKCo0hwnses7q5bXIWqkujaIaheYwLklfKLuk8NeA4dlAhDCuzx6xGXnyPi8.5HiZbrX54h8tJnNywixY-&format=source",
         icon: "fa-globe",
         plans: [
-          { id: "surf-1", title: "Share Plan", subtitle: "1 Month (Myanmar မသုံးမရပါ)", duration: "1 Month", price: 15000 },
-          { id: "surf-2", title: "Share Plan", subtitle: "2 Months (Myanmar မသုံးမရပါ)", duration: "2 Months", price: 16000 },
-          { id: "surf-3", title: "Private Plan", subtitle: "2 Months (Myanmar မသုံးမရပါ)", duration: "2 Months", price: 48000 }
+          { id: "surf-1", title: "Share Plan", subtitle: "1 Month (Myanmar မသုံးမရပါ)", duration: "1 Month", price: 150000 },
+          { id: "surf-2", title: "Share Plan", subtitle: "2 Months (Myanmar မသုံးမရပါ)", duration: "2 Months", price: 150000 },
+          { id: "surf-3", title: "Private Plan", subtitle: "2 Months (Myanmar မသုံးမရပါ)", duration: "2 Months", price: 150000 }
         ]
       },
       {
@@ -466,7 +1112,7 @@
         img: "https://play-lh.googleusercontent.com/rFhtF_v2VRQkjpSi7Q8SzHsocNNnrk3IME2T_ERIr6GtyTUL8lXIWTTd3TKqAlfDZlA",
         icon: "fa-user-secret",
         plans: [
-          { id: "hma-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 16000 }
+          { id: "hma-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -477,8 +1123,8 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTitBmejj75sDxuPXgG5HAaO629PwWW0ygn7g&s",
         icon: "fa-scissors",
         plans: [
-          { id: "capcut-1", title: "1 Month", subtitle: "1 Device (Share)", duration: "1 Month", price: 15000 },
-          { id: "capcut-2", title: "1 Month", subtitle: "1 Device (Private Own Mail)", duration: "1 Month", price: 17000 }
+          { id: "capcut-1", title: "1 Month", subtitle: "1 Device (Share)", duration: "1 Month", price: 150000 },
+          { id: "capcut-2", title: "1 Month", subtitle: "1 Device (Private Own Mail)", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -489,10 +1135,10 @@
         img: "https://play-lh.googleusercontent.com/OU0BlP8C9-V7ECl2crma7B48nzDbK7liSLjn0j_fpTlyWG6qyEE-mw_KFZ9aOXF0a3w",
         icon: "fa-film",
         plans: [
-          { id: "alight-1", title: "Share Account", subtitle: "1 Device (9 Months)", duration: "9 Months", price: 7000 },
-          { id: "alight-2", title: "Share Account", subtitle: "1 Device (1 Year)", duration: "1 Year", price: 6000 },
-          { id: "alight-3", title: "Private Account", subtitle: "1 Device (9 Months)", duration: "9 Months", price: 15000 },
-          { id: "alight-4", title: "Private Account", subtitle: "1 Device (1 Year)", duration: "1 Year", price: 20000 }
+          { id: "alight-1", title: "Share Account", subtitle: "1 Device (9 Months)", duration: "9 Months", price: 150000 },
+          { id: "alight-2", title: "Share Account", subtitle: "1 Device (1 Year)", duration: "1 Year", price: 150000 },
+          { id: "alight-3", title: "Private Account", subtitle: "1 Device (9 Months)", duration: "9 Months", price: 150000 },
+          { id: "alight-4", title: "Private Account", subtitle: "1 Device (1 Year)", duration: "1 Year", price: 150000 }
         ]
       },
       {
@@ -503,7 +1149,7 @@
         img: "https://images-eds-ssl.xboxlive.com/image?url=4rt9.lXDC4H_93laV1_eHHFT949fUipzkiFOBH3fAiZZUCdYojwUyX2aTonS1aIwMrx6NUIsHfUHSLzjGJFxxo4K81Ei7WzcnqEk8W.MgwaH94jRmtJPRlv4F_Z0WGxl4DqVmtd6.Y76H4VGL9nDXhYbs1dM3Ct_E.XEwVjczMY-&format=source",
         icon: "fa-pen-ruler",
         plans: [
-          { id: "canva-1", title: "Lifetime", subtitle: "Lifetime Access", duration: "Lifetime", price: 15000 }
+          { id: "canva-1", title: "Lifetime", subtitle: "Lifetime Access", duration: "Lifetime", price: 150000 }
         ]
       },
       {
@@ -514,8 +1160,8 @@
         img: "https://play-lh.googleusercontent.com/gRheGVxu9Ygc4lIc71bVSgjGNiZ8d-nraBqGFRm1SV-2CsD-byiqzt_8m8y8tJqyLXc",
         icon: "fa-image",
         plans: [
-          { id: "picsart-1", title: "1 Month", subtitle: "Share", duration: "1 Month", price: 6000 },
-          { id: "picsart-2", title: "1 Month", subtitle: "Private", duration: "1 Month", price: 10000 }
+          { id: "picsart-1", title: "1 Month", subtitle: "Share", duration: "1 Month", price: 150000 },
+          { id: "picsart-2", title: "1 Month", subtitle: "Private", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -526,10 +1172,10 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNWdEHuLpguV3_yFFNOcUceTdrA4r9ORyhUA&s",
         icon: "fa-camera-retro",
         plans: [
-          { id: "remini-1", title: "Share Plan", subtitle: "1 Month (Web)", duration: "1 Month", price: 5000 },
-          { id: "remini-2", title: "Share Plan", subtitle: "1 Year (APK Lite)", duration: "1 Year", price: 20000 },
-          { id: "remini-3", title: "Share Plan", subtitle: "1 Year (APK Pro)", duration: "1 Year", price: 25000 },
-          { id: "remini-4", title: "Private Plan", subtitle: "1 Month (Web)", duration: "1 Month", price: 10000 }
+          { id: "remini-1", title: "Share Plan", subtitle: "1 Month (Web)", duration: "1 Month", price: 150000 },
+          { id: "remini-2", title: "Share Plan", subtitle: "1 Year (APK Lite)", duration: "1 Year", price: 150000 },
+          { id: "remini-3", title: "Share Plan", subtitle: "1 Year (APK Pro)", duration: "1 Year", price: 150000 },
+          { id: "remini-4", title: "Private Plan", subtitle: "1 Month (Web)", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -540,11 +1186,11 @@
         img: "https://cdn.aptoide.com/imgs/e/5/2/e52547ffd8d39f876386429331e7da38_icon.png",
         icon: "fa-wand-magic-sparkles",
         plans: [
-          { id: "wink-1", title: "Share Plan", subtitle: "1 Month", duration: "1 Month", price: 10000 },
-          { id: "wink-2", title: "Share Plan", subtitle: "1 Year", duration: "1 Year", price: 100000 },
-          { id: "wink-3", title: "Private Plan", subtitle: "1 Week", duration: "1 Week", price: 4000 },
-          { id: "wink-4", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 25000 },
-          { id: "wink-5", title: "Private (Own Mail)", subtitle: "1 Month", duration: "1 Month", price: 26000 }
+          { id: "wink-1", title: "Share Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 },
+          { id: "wink-2", title: "Share Plan", subtitle: "1 Year", duration: "1 Year", price: 150000 },
+          { id: "wink-3", title: "Private Plan", subtitle: "1 Week", duration: "1 Week", price: 150000 },
+          { id: "wink-4", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 },
+          { id: "wink-5", title: "Private (Own Mail)", subtitle: "1 Month", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -555,10 +1201,10 @@
         img: "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/paypal-app-icon.png",
         icon: "fa-paypal",
         plans: [
-          { id: "paypal-1", title: "Personal", subtitle: "Normal Account", duration: "Life", price: 55000 },
-          { id: "paypal-2", title: "Personal", subtitle: "VISA Account", duration: "Life", price: 180000 },
-          { id: "paypal-3", title: "Personal", subtitle: "ID Verified Account", duration: "Life", price: 240000 },
-          { id: "paypal-4", title: "Personal", subtitle: "ID Verified + VISA Account", duration: "Life", price: 360000 }
+          { id: "paypal-1", title: "Personal", subtitle: "Normal Account", duration: "Life", price: 150000 },
+          { id: "paypal-2", title: "Personal", subtitle: "VISA Account", duration: "Life", price: 150000 },
+          { id: "paypal-3", title: "Personal", subtitle: "ID Verified Account", duration: "Life", price: 150000 },
+          { id: "paypal-4", title: "Personal", subtitle: "ID Verified + VISA Account", duration: "Life", price: 150000 }
         ]
       },
       {
@@ -569,7 +1215,7 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8JBN2JE1SzGCPT3m1a9xEku4fwmsKPwIrQQ&s",
         icon: "fa-money-bill-transfer",
         plans: [
-          { id: "wise-1", title: "Account", subtitle: "Verified Account", duration: "Life", price: 798000 }
+          { id: "wise-1", title: "Account", subtitle: "Verified Account", duration: "Life", price: 150000 }
         ]
       },
       {
@@ -580,7 +1226,7 @@
         img: "https://static.vecteezy.com/system/resources/thumbnails/067/565/482/small_2x/payoneer-logo-rounded-app-icon-free-png.png",
         icon: "fa-wallet",
         plans: [
-          { id: "payoneer-1", title: "Account", subtitle: "Verified Account", duration: "Life", price: 24000000 }
+          { id: "payoneer-1", title: "Account", subtitle: "Verified Account", duration: "Life", price: 150000 }
         ]
       },
       {
@@ -591,7 +1237,7 @@
         img: "https://iconape.com/wp-content/files/ea/110921/svg/tiktok-icon-black-1.svg",
         icon: "fa-music",
         plans: [
-          { id: "tiktok-1", title: "Japan Account", subtitle: "1 Account", duration: "Life", price: 15000 }
+          { id: "tiktok-1", title: "Japan Account", subtitle: "1 Account", duration: "Life", price: 150000 }
         ]
       },
       {
@@ -602,8 +1248,10 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4B9Q87OShMm7Y4KXBY3Zt25fCmjKTElQwhg&s",
         icon: "fa-spotify",
         plans: [
-          { id: "spotify-1", title: "2 Months", subtitle: "1 Device (Private)", duration: "2 Months", price: 25000 },
-          { id: "spotify-2", title: "2 Months", subtitle: "1 Device (Family)", duration: "2 Months", price: 20000 }
+          { id: "spotify-3m-own-mail", title: "3 Months", subtitle: "Own Mail", duration: "3 Months", price: 45000 },
+          { id: "spotify-6m-own-mail", title: "6 Months", subtitle: "Own Mail", duration: "6 Months", price: 85000 },
+          { id: "spotify-1-device-private", title: "1 Device", subtitle: "Private", duration: "1 Device", price: 32000 },
+          { id: "spotify-1-device-family", title: "1 Device", subtitle: "Family", duration: "1 Device", price: 20000 }
         ]
       },
       {
@@ -614,8 +1262,8 @@
         img: "https://www.pngall.com/wp-content/uploads/13/Logo-Youtube-PNG-Images.png",
         icon: "fa-youtube",
         plans: [
-          { id: "youtube-1", title: "Private", subtitle: "1 Month", duration: "1 Month", price: 12000 },
-          { id: "youtube-2", title: "Private", subtitle: "3 Months", duration: "3 Months", price: 21000 }
+          { id: "youtube-1", title: "Private", subtitle: "1 Month", duration: "1 Month", price: 150000 },
+          { id: "youtube-2", title: "Private", subtitle: "3 Months", duration: "3 Months", price: 150000 }
         ]
       },
       {
@@ -626,8 +1274,8 @@
         img: "https://static.vecteezy.com/system/resources/thumbnails/012/871/376/small/zoom-logo-in-blue-colors-meetings-app-logotype-illustration-free-png.png",
         icon: "fa-video",
         plans: [
-          { id: "zoom-1", title: "Private", subtitle: "1 Device (14 Days)", duration: "14 Days", price: 10000 },
-          { id: "zoom-2", title: "Private", subtitle: "1 Device (1 Month)", duration: "1 Month", price: 15000 }
+          { id: "zoom-1", title: "Private", subtitle: "1 Device (14 Days)", duration: "14 Days", price: 150000 },
+          { id: "zoom-2", title: "Private", subtitle: "1 Device (1 Month)", duration: "1 Month", price: 150000 }
         ]
       },
       {
@@ -638,14 +1286,14 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDTjgjyc0aonNGbiBIOogmLxNG2rQTKYv-6A&s",
         icon: "fa-paper-plane",
         plans: [
-          { id: "tg-1", title: "Login", subtitle: "1 Month", duration: "1 Month", price: 26000 },
-          { id: "tg-2", title: "Login", subtitle: "1 Year", duration: "1 Year", price: 133000 },
-          { id: "tg-3", title: "Gift Plan", subtitle: "3 Months", duration: "3 Months", price: 68500 },
-          { id: "tg-4", title: "Gift Plan", subtitle: "6 Months", duration: "6 Months", price: 89500 },
-          { id: "tg-5", title: "Gift Plan", subtitle: "12 Months", duration: "12 Months", price: 144000 },
-          { id: "tg-6", title: "Link Plan", subtitle: "3 Months", duration: "3 Months", price: 55500 },
-          { id: "tg-7", title: "Link Plan", subtitle: "6 Months", duration: "6 Months", price: 78500 },
-          { id: "tg-8", title: "Link Plan", subtitle: "12 Months", duration: "12 Months", price: 134000 }
+          { id: "tg-1", title: "Login", subtitle: "1 Month", duration: "1 Month", price: 150000 },
+          { id: "tg-2", title: "Login", subtitle: "1 Year", duration: "1 Year", price: 150000 },
+          { id: "tg-3", title: "Gift Plan", subtitle: "3 Months", duration: "3 Months", price: 150000 },
+          { id: "tg-4", title: "Gift Plan", subtitle: "6 Months", duration: "6 Months", price: 150000 },
+          { id: "tg-5", title: "Gift Plan", subtitle: "12 Months", duration: "12 Months", price: 150000 },
+          { id: "tg-6", title: "Link Plan", subtitle: "3 Months", duration: "3 Months", price: 150000 },
+          { id: "tg-7", title: "Link Plan", subtitle: "6 Months", duration: "6 Months", price: 150000 },
+          { id: "tg-8", title: "Link Plan", subtitle: "12 Months", duration: "12 Months", price: 150000 }
         ]
       },
       {
@@ -656,15 +1304,15 @@
         img: "https://cdn.pixabay.com/photo/2021/12/27/10/50/telegram-6896827_1280.png",
         icon: "fa-bullhorn",
         plans: [
-          { id: "tgb-1", title: "Post View", subtitle: "1,000 Views", duration: "One-time", price: 1000 },
-          { id: "tgb-2", title: "Post View", subtitle: "10,000 Views", duration: "One-time", price: 10000 },
-          { id: "tgb-3", title: "Post View", subtitle: "100,000 Views", duration: "One-time", price: 10000 },
-          { id: "tgb-4", title: "Positive Reactions", subtitle: "1,000 Reactions", duration: "One-time", price: 1000 },
-          { id: "tgb-5", title: "Positive Reactions", subtitle: "10,000 Reactions", duration: "One-time", price: 10000 },
-          { id: "tgb-6", title: "Negative Reactions", subtitle: "1,000 Reactions", duration: "One-time", price: 1000 },
-          { id: "tgb-7", title: "Negative Reactions", subtitle: "10,000 Reactions", duration: "One-time", price: 1000 },
-          { id: "tgb-8", title: "Custom Reactions", subtitle: "1,000 Reactions", duration: "One-time", price: 1000 },
-          { id: "tgb-9", title: "Members (30Days Refill)", subtitle: "1,000 Members", duration: "30 Days", price: 15000 }
+          { id: "tgb-1", title: "Post View", subtitle: "1,000 Views", duration: "One-time", price: 150000 },
+          { id: "tgb-2", title: "Post View", subtitle: "10,000 Views", duration: "One-time", price: 150000 },
+          { id: "tgb-3", title: "Post View", subtitle: "100,000 Views", duration: "One-time", price: 150000 },
+          { id: "tgb-4", title: "Positive Reactions", subtitle: "1,000 Reactions", duration: "One-time", price: 150000 },
+          { id: "tgb-5", title: "Positive Reactions", subtitle: "10,000 Reactions", duration: "One-time", price: 150000 },
+          { id: "tgb-6", title: "Negative Reactions", subtitle: "1,000 Reactions", duration: "One-time", price: 150000 },
+          { id: "tgb-7", title: "Negative Reactions", subtitle: "10,000 Reactions", duration: "One-time", price: 150000 },
+          { id: "tgb-8", title: "Custom Reactions", subtitle: "1,000 Reactions", duration: "One-time", price: 150000 },
+          { id: "tgb-9", title: "Members (30Days Refill)", subtitle: "1,000 Members", duration: "30 Days", price: 150000 }
         ]
       },
       {
@@ -675,7 +1323,7 @@
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlR2O1VJffzz2q3Njwsi6UKllFaBeoDGByCg&s",
         icon: "fa-hard-drive",
         plans: [
-          { id: "terabox-1", title: "Sharing Plan", subtitle: "1 Year (2TB)", duration: "1 Year", price: 30000 }
+          { id: "terabox-1", title: "Sharing Plan", subtitle: "1 Year (2TB)", duration: "1 Year", price: 150000 }
         ]
       },
       {
@@ -686,10 +1334,10 @@
         img: "https://i.pinimg.com/736x/7b/ee/b1/7beeb130bec97106dd408c14c2de4cc9.jpg",
         icon: "fa-language",
         plans: [
-          { id: "duo-1", title: "Family Head (Invite 5 Email)", subtitle: "14 Days", duration: "14 Days", price: 10000 },
-          { id: "duo-2", title: "Family Head (Invite 5 Email)", subtitle: "1 Month", duration: "1 Month", price: 15000 },
-          { id: "duo-3", title: "Invite Private", subtitle: "14 Days", duration: "14 Days", price: 5500 },
-          { id: "duo-4", title: "Invite Private", subtitle: "1 Month", duration: "1 Month", price: 15000 }
+          { id: "duo-1", title: "Family Head (Invite 5 Email)", subtitle: "14 Days", duration: "14 Days", price: 150000 },
+          { id: "duo-2", title: "Family Head (Invite 5 Email)", subtitle: "1 Month", duration: "1 Month", price: 150000 },
+          { id: "duo-3", title: "Invite Private", subtitle: "14 Days", duration: "14 Days", price: 150000 },
+          { id: "duo-4", title: "Invite Private", subtitle: "1 Month", duration: "1 Month", price: 150000 }
         ]
       },
 
@@ -700,7 +1348,7 @@
         desc: "Adobe Suite",
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTKJZvva8td2jSpyQRcmgIUt2IqVWystJGDw&s",
         icon: "fa-pen-nib",
-        plans: [{ id: "adobe-cc-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "adobe-cc-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "photoshop-web",
@@ -709,7 +1357,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg",
         icon: "fa-image",
-        plans: [{ id: "photoshop-web-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "photoshop-web-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "lightroom",
@@ -718,7 +1366,7 @@
         desc: "Adobe Suite",
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWfGsNzhTiuBNUcVd1xRP0dRuSgCfQE92BYg&s",
         icon: "fa-camera",
-        plans: [{ id: "lightroom-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "lightroom-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "premiere-pro",
@@ -727,7 +1375,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/4/40/Adobe_Premiere_Pro_CC_icon.svg",
         icon: "fa-video",
-        plans: [{ id: "premiere-pro-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "premiere-pro-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "illustrator",
@@ -736,7 +1384,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Adobe_Illustrator_CC_icon.svg",
         icon: "fa-bezier-curve",
-        plans: [{ id: "illustrator-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "illustrator-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "after-effects",
@@ -745,7 +1393,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Adobe_After_Effects_CC_icon.svg",
         icon: "fa-clapperboard",
-        plans: [{ id: "after-effects-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "after-effects-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "acrobat-pro",
@@ -754,7 +1402,7 @@
         desc: "Adobe Suite",
         img: "https://store-images.s-microsoft.com/image/apps.16022.76bd76a9-dd08-45af-8fbb-83136361ba29.53e3d20a-d38e-4fda-b83d-edd73022f860.f5996c3f-1dfa-47e3-87d9-31482c013f19.png",
         icon: "fa-file-pdf",
-        plans: [{ id: "acrobat-pro-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "acrobat-pro-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "indesign",
@@ -763,7 +1411,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/4/48/Adobe_InDesign_CC_icon.svg",
         icon: "fa-book-open",
-        plans: [{ id: "indesign-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "indesign-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "audition",
@@ -772,7 +1420,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Adobe_Audition_CC_icon_%282020%29.svg/960px-Adobe_Audition_CC_icon_%282020%29.svg.png",
         icon: "fa-waveform",
-        plans: [{ id: "audition-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "audition-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "animate",
@@ -781,7 +1429,7 @@
         desc: "Adobe Suite",
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5YMzAD_LvhMl3avnxixI2SX_noq8Az0ho0w&s",
         icon: "fa-person-running",
-        plans: [{ id: "animate-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "animate-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "dreamweaver",
@@ -790,7 +1438,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Adobe_Dreamweaver_CC_icon.svg/960px-Adobe_Dreamweaver_CC_icon.svg.png",
         icon: "fa-code",
-        plans: [{ id: "dreamweaver-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "dreamweaver-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "bridge",
@@ -799,7 +1447,7 @@
         desc: "Adobe Suite",
         img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9srGE-wctW4nZmVPgTxPB5POyKXNuZgttvw&s",
         icon: "fa-folder-tree",
-        plans: [{ id: "bridge-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "bridge-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "express",
@@ -808,7 +1456,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Adobe_Express_logo_RGB_1024px.png/500px-Adobe_Express_logo_RGB_1024px.png",
         icon: "fa-pen-to-square",
-        plans: [{ id: "express-1a", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "express-1a", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "capture",
@@ -817,7 +1465,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Adobe_Capture_CC_2026_icon.svg/3840px-Adobe_Capture_CC_2026_icon.svg.png",
         icon: "fa-object-group",
-        plans: [{ id: "capture-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "capture-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "aero",
@@ -826,7 +1474,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Adobe_Aero_icon_%282021%29.svg/250px-Adobe_Aero_icon_%282021%29.svg.png",
         icon: "fa-cube",
-        plans: [{ id: "aero-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "aero-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "fonts",
@@ -835,7 +1483,7 @@
         desc: "Adobe Suite",
         img: "https://cdn-icons-png.flaticon.com/512/5968/5968385.png",
         icon: "fa-font",
-        plans: [{ id: "fonts-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "fonts-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "fresco",
@@ -844,7 +1492,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Adobe_Fresco_CC_icon.svg/960px-Adobe_Fresco_CC_icon.svg.png",
         icon: "fa-paintbrush",
-        plans: [{ id: "fresco-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "fresco-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "media-encoder",
@@ -853,7 +1501,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Adobe_Media_Encoder_Icon.svg/3840px-Adobe_Media_Encoder_Icon.svg.png",
         icon: "fa-compact-disc",
-        plans: [{ id: "media-encoder-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "media-encoder-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "character-animator",
@@ -862,7 +1510,7 @@
         desc: "Adobe Suite",
         img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Adobe_Character_Animator_icon_%282020%29.svg/960px-Adobe_Character_Animator_icon_%282020%29.svg.png",
         icon: "fa-face-smile",
-        plans: [{ id: "character-animator-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "character-animator-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       },
       {
         id: "firefly",
@@ -871,39 +1519,507 @@
         desc: "Adobe Suite",
         img: "https://play-lh.googleusercontent.com/pVDW3ZCnuK9DKm1w6P3ux1b3SiqnLu5xfUabSqKrGFYKBhAU1sE9SvT477rvHegFQZRDYXRS11k3Sz_Hu-mCIrw",
         icon: "fa-sparkles",
-        plans: [{ id: "firefly-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 30000 }]
+        plans: [{ id: "firefly-1", title: "Private Plan", subtitle: "1 Month", duration: "1 Month", price: 150000 }]
       }
     ];
+    // Apply user-provided price mappings to product plans (expanded)
+    function applyUserPrices() {
+      const durationMap = {
+        '1 Month': 10000,
+        '3 Months': 15000,
+        '6 Months': 20000,
+        '1 Year': 25000,
+        '12 Months': 25000,
+        '2 Months': 18000
+      };
+
+      // Add missing products requested by user
+      const addIfMissing = (prod) => {
+        if (!productData.find(p => p.id === prod.id)) productData.push(prod);
+      };
+
+      addIfMissing({ id: 'claude-ai', cat: 'AI Tools', name: 'Claude AI', desc: 'Anthropic Claude access', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYgVK55MkMfNzkFo8Q6TNCIjtFO0LXHw1qqHUk5nMY-iB-_mdKWNitr8Fj&s=10', icon: 'fa-robot', plans: [
+        { id: 'claude-1', title: 'Shared Plan', subtitle: 'Shared', duration: '1 Month', price: 95000 },
+        { id: 'claude-2', title: 'Private Plan', subtitle: 'Private', duration: '1 Month', price: 150000 },
+        { id: 'claude-3', title: '50M Token', subtitle: '3 Days', duration: '3 Days', price: 30000 },
+        { id: 'claude-4', title: '50M Token', subtitle: '5 Days', duration: '5 Days', price: 50000 },
+        { id: 'claude-5', title: '70M Token', subtitle: '3 Days', duration: '3 Days', price: 50000 },
+        { id: 'claude-6', title: '70M Token', subtitle: '5 Days', duration: '5 Days', price: 70000 },
+        { id: 'claude-7', title: '100M Token', subtitle: '3 Days', duration: '3 Days', price: 77000 },
+        { id: 'claude-8', title: '100M Token', subtitle: '5 Days', duration: '5 Days', price: 88000 }
+      ]});
+
+      addIfMissing({ id: 'netflix', cat: 'Streaming', name: 'Netflix', desc: 'Streaming Service', img: 'https://play-lh.googleusercontent.com/fXVS45nukV1x9PYVSKHkCQK0QGCOishIvAOxIZS3sgRem8HS7l9l94_Ggj-WZPrTLePRdNYN4pp4SPAQL7oS0PU', icon: 'fa-film', plans: [
+        { id: 'netflix-4k-1', title: 'UHD 4K', subtitle: '1 Month', duration: '1 Month', price: 25000 },
+        { id: 'netflix-4k-2', title: 'UHD 4K', subtitle: '2 Months', duration: '2 Months', price: 33000 },
+        { id: 'netflix-4k-3', title: 'UHD 4K', subtitle: '3 Months', duration: '3 Months', price: 50000 },
+        { id: 'netflix-fhd-1', title: 'FHD 1080P', subtitle: '1 Month', duration: '1 Month', price: 24000 },
+        { id: 'netflix-whole', title: 'Whole Account', subtitle: '5 Profiles', duration: '1 Month', price: 66000 }
+      ]});
+
+      addIfMissing({ id: 'hbo-max', cat: 'Streaming', name: 'HBO Max', desc: 'Streaming Service', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPofZe5f4k2qFUTQILmvENsehcG_SmHhgzqIsL0zn6KQ&s=10', icon: 'fa-film', plans: [
+        { id: 'hbo-1', title: 'Ultimate 1P2U', subtitle: '1 User/2 Users', duration: '1 Month', price: 18000 },
+        { id: 'hbo-2', title: 'Semiprivate', subtitle: 'Semiprivate', duration: '1 Month', price: 25000 },
+        { id: 'hbo-3', title: 'Whole Account', subtitle: '5 Profiles', duration: '1 Month', price: 55000 }
+      ]});
+
+      addIfMissing({ id: 'crunchyroll', cat: 'Streaming', name: 'Crunchyroll', desc: 'Anime streaming', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5ICLOEOV3s92xrTUgLZn1hvNi5BCk7T-UtKvv-4l2Ww&s=10', icon: 'fa-film', plans: [
+        { id: 'crunch-1', title: 'Share', subtitle: '9 Months', duration: '9 Months', price: 40000 }
+      ]});
+
+      addIfMissing({ id: 'spotify', cat: 'Music Services', name: 'Spotify', desc: 'Music streaming', img: '', icon: 'fa-spotify', plans: [
+        { id: 'spotify-3m-own-mail', title: '3 Months', subtitle: 'Own Mail', duration: '3 Months', price: 50000 },
+        { id: 'spotify-6m-own-mail', title: '6 Months', subtitle: 'Own Mail', duration: '6 Months', price: 85000 },
+        { id: 'spotify-1-device-private', title: '1 Device', subtitle: 'Private', duration: '1 Device', price: 32000 },
+        { id: 'spotify-1-device-family', title: '1 Device', subtitle: 'Family', duration: '1 Device', price: 20000 }
+      ]});
+
+      addIfMissing({ id: 'apple-music', cat: 'Music Services', name: 'Apple Music', desc: 'Music streaming', img: 'https://store-images.s-microsoft.com/image/apps.56277.14205055896346606.c235e3d6-fbce-45bb-9051-4be6c2ecba8f.e2bf2002-8688-47f3-9312-10b48d2e2644', icon: 'fa-music', plans: [
+        { id: 'apple-1', title: 'Individual', subtitle: '1 Month', duration: '1 Month', price: 15500 }
+      ]});
+
+      addIfMissing({ id: 'qobuz', cat: 'Music Services', name: 'Qobuz', desc: 'Music streaming', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnINAvUBxbYvoGTt29il36f44c8lGWqZDYi0SKs6uwjA&s=10', icon: 'fa-music', plans: [
+        { id: 'qobuz-1', title: 'Individual', subtitle: '1 Month', duration: '1 Month', price: 18000 }
+      ]});
+
+      addIfMissing({ id: 'google-drive', cat: 'Cloud Storage', name: 'Google Drive', desc: 'Cloud storage', img: 'https://ssl.gstatic.com/images/branding/product/2x/hh_drive_96dp.png', icon: 'fa-hard-drive', plans: [
+        { id: 'gdrive-1', title: '1000GB Lifetime', subtitle: 'Lifetime', duration: 'Lifetime', price: 55000 }
+      ]});
+
+      addIfMissing({ id: 'google-one', cat: 'Cloud Storage', name: 'Google One', desc: 'Google One + Gemini', img: 'https://play-lh.googleusercontent.com/pnaxOl9i4YnkYKGMYkH17y_hA_FJOZRahlRGHQaaEGuLwPme68AfPShN2na5dEGOsem3hEzFvWXMz62WPVx8', icon: 'fa-cloud', plans: [
+        { id: 'g1-1', title: '2000GB Own Mail', subtitle: 'Own Mail', duration: '3 Months', price: 20000 },
+        { id: 'g1-2', title: '2000GB Private', subtitle: 'Private', duration: '3 Months', price: 25000 }
+      ]});
+
+      // Add Wattpad and Scribd
+      addIfMissing({ id: 'wattpad', cat: 'Social & Media', name: 'Wattpad', desc: 'Stories & reading', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvessSDjaq_fdhennR3fDDHaNo0f4bMRRJiEifVW6IBg&s=10', icon: 'fa-book-open', plans: [
+        { id: 'wattpad-1', title: '1 Month', subtitle: '1 Month', duration: '1 Month', price: 10000 },
+        { id: 'wattpad-2', title: '3 Months', subtitle: '3 Months', duration: '3 Months', price: 15000 },
+        { id: 'wattpad-3', title: '6 Months', subtitle: '6 Months', duration: '6 Months', price: 20000 },
+        { id: 'wattpad-4', title: '1 Year', subtitle: '1 Year', duration: '1 Year', price: 25000 }
+      ]});
+
+      addIfMissing({ id: 'scribd', cat: 'Books & Reading', name: 'Scribd', desc: 'Scribd Private Plan', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2on978LDc8-HBvolLLCS-b472bDgRuyOGpXJeetzAHA&s', icon: 'fa-book', plans: [
+        { id: 'scribd-private-2m', title: 'Private', subtitle: '2 Months', duration: '2 Months', price: 18000 }
+      ]});
+
+      addIfMissing({ id: 'vsco', cat: 'Editing & Design', name: 'VSCO', desc: 'Photo editor', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNPdVrV6y2DXC4YFqO1LR-aoblpJUM8se5_AYGaFP-1A&s=10', icon: 'fa-camera', plans: [
+        { id: 'vsco-share', title: 'Share', subtitle: 'Year', duration: '1 Year', price: 15000 }
+      ]});
+
+      addIfMissing({ id: 'photoroom', cat: 'Editing & Design', name: 'PhotoRoom', desc: 'Photo background', img: 'https://play-lh.googleusercontent.com/2nsp8p7kA10xJ0C1sVqDRsx1ut67zRKaRGA5UqG--duITFvWFya5eFkuVTw8EWTyrS5S', icon: 'fa-image', plans: [
+        { id: 'photoroom-share', title: 'Share', subtitle: 'Year', duration: '1 Year', price: 15000 }
+      ]});
+
+      addIfMissing({ id: 'coursera', cat: 'Education', name: 'Coursera', desc: 'Courses access', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVHC9FHdQCVmJZR3lM4_xnZIQIUue97LNdJ23z5dJPGg&s=10', icon: 'fa-graduation-cap', plans: [
+        { id: 'coursera-1', title: 'Premium Warranty', subtitle: '1 Year', duration: '1 Year', price: 130000 },
+        { id: 'coursera-2', title: 'Premium Warranty', subtitle: '6 Months', duration: '6 Months', price: 80000 },
+        { id: 'coursera-3', title: '76 Courses Access', subtitle: '1 Year', duration: '1 Year', price: 55000 }
+      ]});
+
+      addIfMissing({ id: 'microsoft-365', cat: 'Education', name: 'Microsoft 365', desc: 'Office suite', img: '', icon: 'fa-microsoft', plans: [
+        { id: 'm365-1', title: 'Individual', subtitle: 'Individual', duration: '1 Month', price: 15000 },
+        { id: 'm365-2', title: 'Invite Own Mail', subtitle: 'Invite Own Mail', duration: '1 Month', price: 17000 },
+        { id: 'm365-3', title: 'Family Head', subtitle: 'Family Head', duration: '1 Month', price: 18000 }
+      ]});
+
+      addIfMissing({ id: 'wps-office', cat: 'Education', name: 'WPS Office', desc: 'Office suite', img: '', icon: 'fa-file', plans: [
+        { id: 'wps-1', title: 'Pro', subtitle: 'Per Month', duration: '1 Month', price: 18000 },
+        { id: 'wps-2', title: 'Pro', subtitle: 'Per Year', duration: '1 Year', price: 54500 }
+      ]});
+
+      // Now map prices for products that already exist or just-added ones
+      productData.forEach(product => {
+        const name = (product.name || '').toLowerCase();
+        product.plans.forEach(plan => {
+          const dur = plan.duration || '';
+          const sub = (plan.subtitle || '').toLowerCase();
+
+          if (name.includes('chatgpt') || product.id === 'chatgpt') {
+            if (plan.title && plan.title.toLowerCase().includes('personal')) plan.price = 54000;
+            else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('invite')) plan.price = 100000;
+            else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('own') && !plan.title.toLowerCase().includes('warranty')) plan.price = 120000;
+            else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('own') && plan.title.toLowerCase().includes('full warranty')) plan.price = 134000;
+            return;
+          }
+
+          if (product.id === 'gemini') {
+            if (sub.includes('2tb') || sub.includes('2tb storage') || dur.includes('month')) {
+              if (dur.includes('3 Months')) plan.price = 24000;
+              else plan.price = 140000;
+            }
+            if (sub.includes('own mail')) {
+              if (dur.includes('3 Months')) plan.price = 31000;
+              else plan.price = 20000;
+            }
+            return;
+          }
+
+          if (name.includes('claude')) {
+            // Claude prices already set when added, ensure they persist
+            return;
+          }
+
+          // Payment accounts explicit prices
+          if (product.id === 'paypal') {
+            product.plans.forEach(p => p.price = 66000);
+            return;
+          }
+          if (product.id === 'wise') { product.plans.forEach(p=>p.price=1678000); return; }
+          if (product.id === 'payoneer') { product.plans.forEach(p=>p.price=2455000); return; }
+
+          // Advanced AI Video Tools explicit prices
+          if (product.id === 'heygen-creator' || name.includes('heygen')) {
+            product.plans.forEach(p => {
+              if ((p.subtitle || '').toLowerCase().includes('shared')) p.price = 65000;
+              else p.price = 175000;
+            });
+            return;
+          }
+
+          if (name.includes('runway')) {
+            product.plans.forEach(p => {
+              const n = (product.name || '').toLowerCase();
+              if (n.includes('standard')) p.price = 100000;
+              else if (n.includes('pro')) p.price = 130000;
+              else if (n.includes('unlimited')) p.price = 360000;
+              else p.price = 100000;
+            });
+            return;
+          }
+
+          if (name.includes('elevenlab') || product.id === 'elevenlab-creators') {
+            product.plans.forEach(p => {
+              if (p.duration && p.duration.includes('3 Months')) p.price = 170000; else p.price = 80000;
+            });
+            return;
+          }
+
+          // Developer tools explicit
+          if (product.id === 'github-copilot' || name.includes('copilot')) { product.plans.forEach(p=>p.price=100000); return; }
+          if (product.id === 'replit' || name.includes('replit')) { product.plans.forEach(p=>p.price=81000); return; }
+
+          if (name.includes('perplexity')) {
+            if (sub.includes('share')) plan.price = 14000;
+            else if (sub.includes('private')) plan.price = 25000;
+            else if (sub.includes('own')) plan.price = 33000;
+            return;
+          }
+
+          if (name.includes('grok')) {
+            plan.price = 100000; return;
+          }
+
+          if (name.includes('gamma')) {
+            if (sub.includes('shared')) plan.price = 73000; else plan.price = 120000; return;
+          }
+
+          if (name.includes('flow')) {
+            if (dur.includes('3 Months')) {
+              if (sub.includes('own')) plan.price = 20000; else plan.price = 25000;
+            }
+            return;
+          }
+
+          if (name.includes('canva')) { plan.price = 20000; return; }
+          if (name.includes('capcut')) { if (sub.includes('2 devices')) plan.price = 32000; else plan.price = 25000; return; }
+          if (name.includes('alight')) {
+            if (sub.includes('share') && dur.includes('9')) plan.price = 10000;
+            else if (sub.includes('share') && dur.includes('1 Year')) plan.price = 15000;
+            else if (sub.includes('private') && dur.includes('9')) plan.price = 20000;
+            else if (sub.includes('private') && dur.includes('1 Year')) plan.price = 25000;
+            return;
+          }
+
+          if (name.includes('picsart')) { if (sub.includes('private')) plan.price = 10000; else plan.price = 5000; return; }
+          if (name.includes('wink')) {
+            if (dur.includes('Week')) plan.price = 5000;
+            else if (dur.includes('Month') && sub.includes('own')) plan.price = 30000;
+            else if (dur.includes('Month')) plan.price = 31000;
+            else if (dur.includes('Year')) plan.price = 100000;
+            return;
+          }
+          if (name.includes('remini')) {
+            if (sub.includes('apk pro')) plan.price = 31000;
+            else if (sub.includes('apk lite')) plan.price = 20000;
+            else if (sub.includes('web private')) plan.price = 15000;
+            else plan.price = 5000;
+            return;
+          }
+
+          if (name.includes('youtube premium')) {
+            if (dur.includes('3 Months')) plan.price = 34000; else plan.price = 24000; return;
+          }
+
+          if (name.includes('terabox')) { product.plans.forEach(p=>p.price=25000); return; }
+
+          // VPN mappings
+          if (product.id === 'expressvpn' || name.includes('express')) {
+            // decide by duration and subtitle containing device count
+            if (dur.includes('1 Month')) {
+              if (sub.includes('2 devices')|| sub.includes('2 device')) plan.price = 14000;
+              else if (sub.includes('5 devices')|| sub.includes('5 device')) plan.price = 32000;
+              else plan.price = 7000;
+            }
+            if (dur.includes('3 Months')) {
+              if (sub.includes('2 devices')) plan.price = 34000;
+              else if (sub.includes('5 devices')) plan.price = 67000;
+              else plan.price = 22000;
+            }
+            if (dur.includes('6 Months')) {
+              if (sub.includes('2 devices')) plan.price = 66000;
+              else if (sub.includes('1 device')) plan.price = 32000;
+            }
+            if (dur.includes('Year') || dur.includes('1 Year')) plan.price = 75000;
+            return;
+          }
+
+          if (product.id === 'nordvpn' || name.includes('nord')) {
+            if (dur.includes('Year')) plan.price = 40000; else if (dur.includes('3 Months')) plan.price = 58000; return;
+          }
+
+          if (name.includes('surfshark')) {
+            if (dur.includes('2 Months')) plan.price = 17000; else if (dur.includes('Month')) plan.price = 15500; else if (sub.includes('private')) plan.price = 44000; return;
+          }
+
+          if (name.includes('hma')) { plan.price = 17000; return; }
+          if (name.includes('outline')) {
+            if (sub.includes('2 devices')) plan.price = 15000; else if (sub.includes('5 devices')) plan.price = 20000; else plan.price = 13000; return;
+          }
+          if (name.includes('v2box')) {
+            if (sub.includes('2 devices')) plan.price = 20000; else if (sub.includes('5 devices')) plan.price = 33000; else plan.price = 15000; return;
+          }
+
+          // Grammarly
+          if (name.includes('grammarly')) { if (sub.includes('share')) plan.price = 15000; return; }
+
+          // Duolingo mapping
+          if (product.id === 'duolingo' || name.includes('duolingo')) {
+            if (dur.includes('14 Days') && sub.toLowerCase().includes('family')) plan.price = 10000;
+            else if (dur.includes('1 Month') && sub.toLowerCase().includes('family')) plan.price = 15000;
+            else if (dur.includes('14 Days')) plan.price = 5500;
+            else if (dur.includes('1 Month')) plan.price = 20000;
+            return;
+          }
+
+          // Fallback: map by duration if matched
+          for (const key in durationMap) {
+            if (dur && dur.includes(key)) {
+              plan.price = durationMap[key];
+              break;
+            }
+          }
+        });
+      });
+
+      // Explicit overrides from user's provided list (base prices), then add +20,000 Ks surcharge
+      const explicitRules = [
+        { matchProduct: p => p.id === 'grok-ai' || (p.name||'').toLowerCase().includes('grok'), matchPlan: plan => (plan.duration||'').includes('1 Month') && (plan.subtitle||'').toLowerCase().includes('private'), price: 79000 },
+        { matchProduct: p => p.id === 'elevenlab-creators' || (p.name||'').toLowerCase().includes('elevenlab'), matchPlan: plan => (plan.duration||'').includes('1 Month') && (plan.subtitle||'').toLowerCase().includes('private'), price: 50000 },
+        { matchProduct: p => p.id === 'elevenlab-creators' || (p.name||'').toLowerCase().includes('elevenlab'), matchPlan: plan => (plan.duration||'').toLowerCase().includes('3 months'), price: 120000 },
+        { matchProduct: p => p.id === 'github-copilot' || (p.name||'').toLowerCase().includes('copilot'), matchPlan: plan => true, price: 59000 },
+        { matchProduct: p => p.id === 'claude-ai' || (p.name||'').toLowerCase().includes('claude'), matchPlan: plan => (plan.title||'').toLowerCase().includes('pro') || (plan.subtitle||'').toLowerCase().includes('private'), price: 105000 },
+        { matchProduct: p => p.id === 'claude-ai', matchPlan: plan => (plan.title||'').toLowerCase().includes('max') || (plan.title||'').toLowerCase().includes('x5'), price: 650000 },
+        { matchProduct: p => p.id === 'gamma-ai' || (p.name||'').toLowerCase().includes('gamma'), matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('shared'), price: 40000 },
+        { matchProduct: p => p.id === 'gamma-ai' || (p.name||'').toLowerCase().includes('gamma'), matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('private'), price: 79000 },
+        { matchProduct: p => p.id === 'heygen-creator' || (p.name||'').toLowerCase().includes('heygen'), matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('shared'), price: 35000 },
+        { matchProduct: p => p.id === 'heygen-creator' || (p.name||'').toLowerCase().includes('heygen'), matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('private'), price: 135000 },
+        // Runway plans (add product if missing)
+        { matchProduct: p => (p.name||'').toLowerCase().includes('runway') || p.id === 'runway', matchPlan: plan => (plan.title||'').toLowerCase().includes('standard') || (plan.subtitle||'').toLowerCase().includes('625'), price: 79000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('runway') || p.id === 'runway', matchPlan: plan => (plan.title||'').toLowerCase().includes('pro') || (plan.subtitle||'').toLowerCase().includes('2250'), price: 130000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('runway') || p.id === 'runway', matchPlan: plan => (plan.title||'').toLowerCase().includes('unlimited') || (plan.subtitle||'').toLowerCase().includes('relax'), price: 310000 },
+        { matchProduct: p => (p.id === 'spotify' || (p.name||'').toLowerCase().includes('spotify')) && (plan.duration||'').includes('3 Months') && (plan.subtitle||'').toLowerCase().includes('own mail'), price: 45000 },
+        { matchProduct: p => (p.id === 'spotify' || (p.name||'').toLowerCase().includes('spotify')) && (plan.duration||'').toLowerCase().includes('6 months') && (plan.subtitle||'').toLowerCase().includes('own mail'), price: 85000 },
+        { matchProduct: p => p.id === 'invideo-studio' || (p.name||'').toLowerCase().includes('invideo'), matchPlan: plan => (plan.duration||'').includes('1 Month'), price: 35000 },
+        { matchProduct: p => p.id === 'invideo-studio' || (p.name||'').toLowerCase().includes('invideo'), matchPlan: plan => (plan.duration||'').includes('3 Months'), price: 75000 },
+        { matchProduct: p => p.id === 'invideo-studio' || (p.name||'').toLowerCase().includes('invideo'), matchPlan: plan => (plan.duration||'').includes('6 Months'), price: 130000 },
+        { matchProduct: p => p.id === 'leonardo-ai' || (p.name||'').toLowerCase().includes('leonardo'), matchPlan: plan => (plan.duration||'').includes('1 Month'), price: 75000 },
+        { matchProduct: p => p.id === 'consensus-ai' || (p.name||'').toLowerCase().includes('consensus'), matchPlan: plan => (plan.duration||'').includes('3 Months'), price: 30000 },
+        { matchProduct: p => p.id === 'hedra-basic' || (p.name||'').toLowerCase().includes('hedra'), matchPlan: plan => true, price: 55000 },
+        { matchProduct: p => p.id === 'jenny-ai' || (p.name||'').toLowerCase().includes('jenny'), matchPlan: plan => (plan.duration||'').includes('3 Months'), price: 15000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('jenni') || p.id === 'jenni-ai', matchPlan: plan => (plan.duration||'').includes('1 Month'), price: 20000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('jenni') || p.id === 'jenni-ai', matchPlan: plan => (plan.duration||'').toLowerCase().includes('3 months'), price: 39000 },
+        { matchProduct: p => p.id === 'humanizer-basic' || (p.name||'').toLowerCase().includes('humanizer basic'), matchPlan: plan => true, price: 55000 },
+        { matchProduct: p => p.id === 'humanizer-pro' || (p.name||'').toLowerCase().includes('humanizer pro'), matchPlan: plan => true, price: 120000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('replit') || p.id === 'replit', matchPlan: plan => true, price: 90000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('suno') || p.id === 'suno-ai', matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('shared'), price: 59000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('suno') || p.id === 'suno-ai', matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('private'), price: 90000 },
+        { matchProduct: p => p.id === 'meitu-vip' || (p.name||'').toLowerCase().includes('meitu'), matchPlan: plan => true, price: 35000 },
+        { matchProduct: p => p.id === 'kling-ai' || (p.name||'').toLowerCase().includes('kling'), matchPlan: plan => (plan.subtitle||'').includes('500'), price: 45000 },
+        { matchProduct: p => p.id === 'kling-ai' || (p.name||'').toLowerCase().includes('kling'), matchPlan: plan => (plan.subtitle||'').includes('1100'), price: 55000 },
+        { matchProduct: p => p.id === 'rezi-ai' || (p.name||'').toLowerCase().includes('rezi'), matchPlan: plan => (plan.duration||'').toLowerCase().includes('lifetime'), price: 120000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('higgsfield'), matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('shared'), price: 45000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('higgsfield'), matchPlan: plan => (plan.subtitle||'').toLowerCase().includes('private') && (plan.subtitle||'').toLowerCase().includes('70'), price: 55000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('higgsfield'), matchPlan: plan => (plan.title||'').toLowerCase().includes('1 month') && (plan.subtitle||'').toLowerCase().includes('private'), price: 120000 },
+        { matchProduct: p => p.id === 'cursor-ai' || (p.name||'').toLowerCase().includes('cursor'), matchPlan: plan => true, price: 120000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('manus') || p.id === 'manus-ai', matchPlan: plan => (plan.subtitle||'').includes('1,000') || (plan.subtitle||'').includes('1000'), price: 15000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('manus') || p.id === 'manus-ai', matchPlan: plan => (plan.subtitle||'').includes('3,000') || (plan.subtitle||'').includes('3000'), price: 50000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('manus') || p.id === 'manus-ai', matchPlan: plan => (plan.subtitle||'').includes('4,000') || (plan.subtitle||'').includes('4000'), price: 70000 },
+        { matchProduct: p => (p.name||'').toLowerCase().includes('lovable') || p.id === 'lovable-pro', matchPlan: plan => true, price: 39000 },
+        { matchProduct: p => p.id === 'gemini-ultra' || (p.name||'').toLowerCase().includes('gemini ultra') || (p.name||'').toLowerCase().includes('gemini'), matchPlan: plan => (plan.duration||'').includes('1 Month') && (plan.subtitle||'').toLowerCase().includes('bad'), price: 130000 },
+        { matchProduct: p => p.id === 'gemini-ultra' || (p.name||'').toLowerCase().includes('gemini ultra') || (p.name||'').toLowerCase().includes('gemini'), matchPlan: plan => (plan.duration||'').includes('6 Months'), price: 490000 },
+        { matchProduct: p => p.id === 'gemini-ultra' || (p.name||'').toLowerCase().includes('gemini ultra') || (p.name||'').toLowerCase().includes('gemini'), matchPlan: plan => (plan.title||'').toLowerCase().includes('x5') || (plan.subtitle||'').toLowerCase().includes('good'), price: 170000 }
+      ];
+
+      // LetsVPN explicit overrides
+      explicitRules.push(
+        { matchProduct: p => p.id === 'letsvpn', matchPlan: plan => (plan.title||'').toLowerCase().includes('standard') && (plan.duration||'').includes('1 Month'), price: 50000 },
+        { matchProduct: p => p.id === 'letsvpn', matchPlan: plan => (plan.title||'').toLowerCase().includes('standard') && (plan.duration||'').includes('3 Months'), price: 120000 },
+        { matchProduct: p => p.id === 'letsvpn', matchPlan: plan => (plan.title||'').toLowerCase().includes('standard') && (plan.duration||'').toLowerCase().includes('year'), price: 330000 },
+        { matchProduct: p => p.id === 'letsvpn', matchPlan: plan => (plan.title||'').toLowerCase().includes('platinum') && (plan.duration||'').includes('1 Month'), price: 60000 },
+        { matchProduct: p => p.id === 'letsvpn', matchPlan: plan => (plan.title||'').toLowerCase().includes('platinum') && (plan.duration||'').includes('3 Months'), price: 150000 },
+        { matchProduct: p => p.id === 'letsvpn', matchPlan: plan => (plan.title||'').toLowerCase().includes('platinum') && (plan.duration||'').toLowerCase().includes('year'), price: 370000 }
+      );
+
+      // ExitLag explicit overrides
+      explicitRules.push(
+        { matchProduct: p => p.id === 'exitlag-vpn', matchPlan: plan => ((plan.title||'').toLowerCase().includes('1 month') || (plan.subtitle||'').toLowerCase().includes('1 month')) && ((plan.title||'').toLowerCase().includes('code') || (plan.subtitle||'').toLowerCase().includes('code')), price: 45000 },
+        { matchProduct: p => p.id === 'exitlag-vpn', matchPlan: plan => ((plan.title||'').toLowerCase().includes('3 months') || (plan.subtitle||'').toLowerCase().includes('3 months')) && ((plan.title||'').toLowerCase().includes('code') || (plan.subtitle||'').toLowerCase().includes('code')), price: 130000 },
+        { matchProduct: p => p.id === 'exitlag-vpn', matchPlan: plan => ((plan.title||'').toLowerCase().includes('1 year') || (plan.subtitle||'').toLowerCase().includes('1 year')) && ((plan.title||'').toLowerCase().includes('code') || (plan.subtitle||'').toLowerCase().includes('code')), price: 450000 }
+      );
+
+      // Ensure some referenced products exist (minimal additions)
+      addIfMissing({ id: 'runway', cat: 'AI Tools', name: 'Runway', desc: 'Runway AI credits', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf5suDUtK2dkvfXmy6fBNJGKiXhrLyHLSxikyOTMHYlg&s', icon: 'fa-video', plans: [
+        { id: 'runway-standard', title: 'Standard (625 Credits)', subtitle: '625 Credits', duration: '1 Month', price: 79000 },
+        { id: 'runway-pro', title: 'Pro (2250 Credits)', subtitle: '2250 Credits', duration: '1 Month', price: 130000 },
+        { id: 'runway-unlimited', title: 'Unlimited (Relax Mode)', subtitle: 'Relax Mode', duration: '1 Month', price: 310000 }
+      ]});
+
+      addIfMissing({ id: 'replit', cat: 'Developer Tools', name: 'Replit Core', desc: 'Replit private plan', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV6K_cvove5PeR57E1u0LdnAyFycl8HnDTnvFTDf84jj7c94VUcffa-d1I&s=10', icon: 'fa-code', plans: [ { id: 'replit-core-1', title: '1 Month', subtitle: 'Private Mail', duration: '1 Month', price: 90000 } ] });
+
+      addIfMissing({ id: 'suno-ai', cat: 'AI Tools', name: 'Suno AI Pro', desc: 'Audio generation', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdMH1kMXTmU72FYzALerr5nbpm61MbSlaPqI_1sd3vrw&s=10', icon: 'fa-music', plans: [ { id: 'suno-shared', title: '1 Month', subtitle: 'Shared Mail', duration: '1 Month', price: 59000 }, { id: 'suno-private', title: '1 Month', subtitle: 'Private Mail', duration: '1 Month', price: 90000 } ] });
+
+      addIfMissing({ id: 'jenni-ai', cat: 'AI Tools', name: 'Jenni AI', desc: 'AI writing assistant', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTW1sVaQi6nrK71LJ9NZlcSyovfmlfs1hQiXXkzEopXdg&s=10', icon: 'fa-pen', plans: [ { id: 'jenni-1', title: '1 Month', subtitle: 'Shared Account', duration: '1 Month', price: 20000 }, { id: 'jenni-2', title: '3 Months', subtitle: 'Shared Account', duration: '3 Months', price: 39000 } ] });
+
+      addIfMissing({ id: 'manus-ai', cat: 'AI Tools', name: 'Manus AI Top Up', desc: 'Points top up', img: '', icon: 'fa-coins', plans: [ { id: 'manus-1000', title: 'Top Up', subtitle: '1,000 Points', duration: 'One-time', price: 15000 }, { id: 'manus-3000', title: 'Top Up', subtitle: '3,000 Points', duration: 'One-time', price: 50000 }, { id: 'manus-4000', title: 'Top Up', subtitle: '4,000 Points', duration: 'One-time', price: 70000 } ] });
+
+      // Apply overrides and surcharge (+20,000 Ks)
+      productData.forEach(product => {
+        explicitRules.forEach(rule => {
+          try {
+            if (rule.matchProduct(product)) {
+              product.plans.forEach(plan => {
+                if (rule.matchPlan(plan)) {
+                  plan.price = rule.price + 20000;
+                }
+              });
+            }
+          } catch (e) {
+            // safe-guard: skip rule on errors
+          }
+        });
+      });
+
+
+    }
+
+    applyUserPrices();
+
+    function adjustAdobeSuitePrices() {
+      productData.forEach(product => {
+        if (product.cat === 'Adobe Suite' && Array.isArray(product.plans)) {
+          product.plans.forEach(plan => {
+            if (typeof plan.price === 'number') {
+              plan.price += 50000;
+            }
+          });
+        }
+      });
+    }
+
+    adjustAdobeSuitePrices();
 
     const categories = ["All Products", ...new Set(productData.map(item => item.cat))];
     let currentProduct = null;
     let cart = {};
+    let activeCategory = "All Products";
+    let searchTerm = "";
+    let sortMode = "popularity";
 
     function initStars() {
-  const layer = document.getElementById("star-layer");
-  for (let i = 0; i < 24; i++) {
-    const star = document.createElement("div");
-    const size = Math.random() * 2 + 1;
-    star.className = "star";
-    star.style.width = size + "px";
-    star.style.height = size + "px";
-    star.style.left = Math.random() * 100 + "vw";
-    star.style.top = Math.random() * 100 + "vh";
-    star.style.animationDuration = (Math.random() * 4 + 2) + "s";
-    layer.appendChild(star);
-  }
-}
+      const layer = document.getElementById("star-layer");
+      layer.innerHTML = "";
+      for (let i = 0; i < 36; i++) {
+        const star = document.createElement("div");
+        const size = Math.random() * 2 + 1;
+        star.className = "star";
+        star.style.width = size + "px";
+        star.style.height = size + "px";
+        star.style.left = Math.random() * 100 + "vw";
+        star.style.top = Math.random() * 100 + "vh";
+        star.style.animationDuration = (Math.random() * 4 + 2) + "s";
+        layer.appendChild(star);
+      }
+    }
 
-   function showView(view) {
-  ["home", "store", "detail", "review", "receipt"].forEach(id => {
-    document.getElementById("view-" + id).classList.add("hidden-view");
-  });
+    function initReveal() {
+      const reveals = document.querySelectorAll(".reveal");
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+          }
+        });
+      }, { threshold: 0.16 });
 
-  document.getElementById("view-" + view).classList.remove("hidden-view");
-  window.scrollTo(0, 0);
+      reveals.forEach(el => observer.observe(el));
+    }
 
-  updateCartBar();
-}
+    function showView(view) {
+      ["home", "store", "detail", "review", "receipt"].forEach(id => {
+        document.getElementById("view-" + id).classList.add("hidden-view");
+      });
+
+      document.getElementById("view-" + view).classList.remove("hidden-view");
+      window.scrollTo(0, 0);
+      updateCartBar();
+    }
+
+    function formatPrice(value) {
+      return `${value.toLocaleString()} Ks`;
+    }
+
+    function getProductStartingPrice(product) {
+      return product.plans?.reduce((min, plan) => Math.min(min, plan.price), Number.POSITIVE_INFINITY) || 0;
+    }
+
+    function renderCategoryPreview() {
+      const container = document.getElementById("category-preview-grid");
+      const previewCategories = categories.slice(1, 5);
+      container.innerHTML = previewCategories.map((cat, index) => {
+        const count = productData.filter(item => item.cat === cat).length;
+        const icons = ["fa-robot", "fa-shield-halved", "fa-pen-ruler", "fa-film"];
+        return `
+          <button onclick="showView('store'); setActiveCategory('${cat}')" class="rounded-[24px] border border-white/10 bg-white/5 p-5 text-left transition hover:border-yellow-400/25 hover:bg-yellow-400/10">
+            <div class="mb-3 text-xl text-gold"><i class="fa-solid ${icons[index]}"></i></div>
+            <h4 class="font-semibold text-white">${cat}</h4>
+            <p class="mt-2 text-sm text-slate-400">${count} curated products ready for instant access.</p>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderFeaturedProducts() {
+      const container = document.getElementById("featured-products-grid");
+      const featured = productData.slice(0, 6);
+      container.innerHTML = featured.map(product => `
+        <div class="rounded-[24px] border border-white/10 bg-white/5 p-5 transition hover:border-yellow-400/25 hover:bg-yellow-400/10">
+          <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-yellow-400/20 bg-black/60">
+              <img src="${product.img || ""}" alt="${product.name}" class="h-8 w-8 object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+              <i class="fa-solid ${product.icon} hidden text-xl text-gold"></i>
+            </div>
+            <span class="rounded-full border border-white/10 bg-black/50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-400">${product.cat}</span>
+          </div>
+          <h4 class="mt-5 text-xl font-semibold text-white">${product.name}</h4>
+          <p class="mt-2 text-sm leading-7 text-slate-400">${product.desc}</p>
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-sm font-semibold text-gold">From ${formatPrice(getProductStartingPrice(product))}</span>
+            <button onclick="openProduct('${product.id}')" class="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-sm font-semibold text-gold">View plan</button>
+          </div>
+        </div>
+      `).join("");
+    }
 
     function renderCategories() {
       const container = document.getElementById("category-filters");
@@ -911,97 +2027,159 @@
 
       categories.forEach(cat => {
         const btn = document.createElement("button");
-        btn.className = "category-btn glass px-4 py-2 rounded-full text-sm font-semibold hover:text-gold transition";
+        btn.className = "category-btn rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-300 transition hover:text-gold";
         btn.textContent = cat;
         if (cat === "All Products") btn.classList.add("active");
         btn.onclick = () => {
           document.querySelectorAll(".category-btn").forEach(el => el.classList.remove("active"));
           btn.classList.add("active");
-          renderProducts(cat);
+          activeCategory = cat;
+          renderProducts(activeCategory, searchTerm, sortMode);
         };
         container.appendChild(btn);
       });
     }
 
-    function renderProducts(category = "All Products") {
-  const grid = document.getElementById("products-grid");
+    function renderProducts(category = "All Products", query = "", mode = "default") {
+      const grid = document.getElementById("products-grid");
+      activeCategory = category;
+      searchTerm = query;
+      sortMode = mode;
 
-  const filtered = category === "All Products"
-    ? productData
-    : productData.filter(item => item.cat === category);
+      const filtered = (category === "All Products"
+        ? productData
+        : productData.filter(item => item.cat === category)).filter(item => {
+          if (!query) return true;
+          const haystack = `${item.name} ${item.desc} ${item.cat}`.toLowerCase();
+          return haystack.includes(query.toLowerCase());
+        });
 
-  let html = "";
+      const sorted = [...filtered].sort((a, b) => {
+        const aPrice = getProductStartingPrice(a);
+        const bPrice = getProductStartingPrice(b);
+        switch (mode) {
+          case "trend":
+            return (b.plans.length - a.plans.length) || a.name.localeCompare(b.name);
+          case "most-sale":
+            return (bPrice - aPrice) || a.name.localeCompare(b.name);
+          case "a-z":
+            return a.name.localeCompare(b.name);
+          case "vpn-end": {
+            const aVpn = a.cat === "VPN" ? 1 : 0;
+            const bVpn = b.cat === "VPN" ? 1 : 0;
+            return aVpn - bVpn || a.name.localeCompare(b.name);
+          }
+          case "popularity":
+            return bPrice - aPrice;
+          default:
+            return 0;
+        }
+      });
 
-  filtered.forEach(p => {
-    html += `
-      <div onclick="openProduct('${p.id}')" class="glass rounded-3xl p-5 text-center cursor-pointer hover:-translate-y-1 transition duration-200 flex flex-col items-center">
-        <div class="w-16 h-16 rounded-2xl overflow-hidden bg-cardBlack border border-white/10 mb-4 flex items-center justify-center">
-          <img src="${p.img || ""}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-          <i class="fa-solid ${p.icon} text-gold text-2xl hidden"></i>
+      grid.innerHTML = sorted.map(product => `
+        <div class="product-card glass rounded-[28px] p-5 transition duration-300">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-yellow-400/15 bg-black/60">
+              <img src="${product.img || ""}" alt="${product.name}" class="h-full w-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+              <i class="fa-solid ${product.icon} hidden text-2xl text-gold"></i>
+            </div>
+            <span class="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">${product.cat}</span>
+          </div>
+          <h4 class="mt-6 text-lg font-semibold text-white">${product.name}</h4>
+          <p class="mt-2 text-sm leading-7 text-slate-400">${product.desc}</p>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-300">Warranty</span>
+            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-300">Fast delivery</span>
+            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-300">${product.plans.length} plans</span>
+          </div>
+          <div class="mt-6 flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Starting from</p>
+              <p class="text-lg font-semibold text-gold">${formatPrice(getProductStartingPrice(product))}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="event.stopPropagation(); openProduct('${product.id}')" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:text-gold">View</button>
+              <button onclick="event.stopPropagation(); addToCartFromCard('${product.id}')" class="rounded-full bg-gold px-3 py-2 text-sm font-semibold text-black transition hover:shadow-goldGlow">Add</button>
+            </div>
+          </div>
         </div>
-        <h4 class="font-bold text-sm md:text-base leading-tight">${p.name}</h4>
-        <p class="text-[11px] text-gray-500 mt-1">${p.desc}</p>
-      </div>
-    `;
-  });
+      `).join("");
+    }
 
-  grid.innerHTML = html;
-}
+    function addToCartFromCard(productId) {
+      const product = productData.find(item => item.id === productId);
+      if (!product?.plans?.length) return;
+      const plan = product.plans[0];
+      if (!cart[plan.id]) {
+        cart[plan.id] = {
+          qty: 0,
+          name: product.name,
+          title: plan.title,
+          subtitle: plan.subtitle,
+          duration: plan.duration,
+          price: plan.price
+        };
+      }
+      cart[plan.id].qty += 1;
+      updateCartBar();
+    }
 
-    function openProduct(id) {
-      currentProduct = productData.find(item => item.id === id);
+    function renderProductDetail() {
+      if (!currentProduct) return;
+      document.getElementById("detail-category").innerText = currentProduct.cat;
       document.getElementById("detail-name").innerText = currentProduct.name;
       document.getElementById("detail-desc").innerText = currentProduct.desc;
+      document.getElementById("detail-badges").innerHTML = `
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-300">${currentProduct.cat}</span>
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-300">${currentProduct.plans.length} plans</span>
+        <span class="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-gold">Warranty included</span>
+      `;
 
       const detailImg = document.getElementById("detail-img");
       const detailIcon = document.getElementById("detail-icon");
 
       if (currentProduct.img) {
         detailImg.src = currentProduct.img;
-        detailImg.style.display = "block";
+        detailImg.classList.remove("hidden");
         detailIcon.classList.add("hidden");
       } else {
-        detailImg.style.display = "none";
-        detailIcon.className = `fa-solid ${currentProduct.icon} text-gold text-5xl`;
+        detailImg.classList.add("hidden");
+        detailIcon.className = `fa-solid ${currentProduct.icon} text-5xl text-gold`;
         detailIcon.classList.remove("hidden");
       }
 
       const plansContainer = document.getElementById("plans-container");
-      plansContainer.innerHTML = "";
-
-      currentProduct.plans.forEach(plan => {
+      plansContainer.innerHTML = currentProduct.plans.map(plan => {
         const qty = cart[plan.id] ? cart[plan.id].qty : 0;
         const qtyText = qty > 0 ? qty : "";
-
-        plansContainer.innerHTML += `
-          <div class="glass rounded-3xl p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-            <div class="flex-1">
-              <div class="flex flex-wrap items-center gap-2 mb-2">
-                <h4 class="font-bold text-lg">${plan.title}</h4>
-                <span class="text-[10px] uppercase font-bold px-2 py-1 rounded-full border border-yellow-400/30 bg-yellow-400/10 text-gold">
-                  ${plan.duration}
-                </span>
+        return `
+          <div class="plan-card rounded-[24px] border border-white/10 bg-white/5 p-5 transition">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h4 class="text-lg font-semibold text-white">${plan.title}</h4>
+                  <span class="rounded-full border border-yellow-400/20 bg-yellow-400/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">${plan.duration}</span>
+                </div>
+                <p class="mt-2 text-sm text-slate-400">${plan.subtitle}</p>
               </div>
-              <p class="text-sm text-gray-400">${plan.subtitle}</p>
-            </div>
-
-            <div class="flex items-center justify-between md:justify-end gap-5">
-              <div class="text-gold font-bold text-lg">${plan.price.toLocaleString()} Ks</div>
-
-              <div class="flex items-center bg-black rounded-2xl border border-white/10 overflow-hidden">
-                <button onclick="event.stopPropagation(); updateQty('${plan.id}', -1)" class="w-10 h-10 hover:bg-white/5 hover:text-gold transition">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <span id="qty-${plan.id}" class="qty-pill min-w-[24px] text-center font-bold text-gold">${qtyText}</span>
-                <button onclick="event.stopPropagation(); updateQty('${plan.id}', 1)" class="w-10 h-10 hover:bg-white/5 hover:text-gold transition">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
+              <div class="flex items-center justify-between gap-5 lg:justify-end">
+                <div class="text-lg font-semibold text-gold">${formatPrice(plan.price)}</div>
+                <div class="flex items-center overflow-hidden rounded-2xl border border-white/10 bg-black/70">
+                  <button onclick="event.stopPropagation(); updateQty('${plan.id}', -1)" class="h-10 w-10 transition hover:text-gold"><i class="fa-solid fa-minus"></i></button>
+                  <span id="qty-${plan.id}" class="qty-pill min-w-[24px] text-center font-semibold text-gold">${qtyText}</span>
+                  <button onclick="event.stopPropagation(); updateQty('${plan.id}', 1)" class="h-10 w-10 transition hover:text-gold"><i class="fa-solid fa-plus"></i></button>
+                </div>
               </div>
             </div>
           </div>
         `;
-      });
+      }).join("");
+    }
 
+    function openProduct(id) {
+      currentProduct = productData.find(item => item.id === id);
+      if (!currentProduct) return;
+      renderProductDetail();
       showView("detail");
     }
 
@@ -1024,93 +2202,79 @@
       if (!cart[planId]) return;
 
       cart[planId].qty += change;
-
       if (cart[planId].qty <= 0) {
         delete cart[planId];
       }
 
-      const qtyEl = document.getElementById("qty-" + planId);
-      if (qtyEl) {
-        qtyEl.textContent = cart[planId] ? cart[planId].qty : "";
-      }
-
+      renderProductDetail();
       updateCartBar();
     }
 
-   function updateCartBar() {
-  let total = 0;
-  let count = 0;
+    function updateCartBar() {
+      let total = 0;
+      let count = 0;
 
-  Object.values(cart).forEach(item => {
-    total += item.qty * item.price;
-    count += item.qty;
-  });
+      Object.values(cart).forEach(item => {
+        total += item.qty * item.price;
+        count += item.qty;
+      });
 
-  document.getElementById("cart-total").innerText = total.toLocaleString() + " Ks";
+      document.getElementById("cart-total").innerText = total.toLocaleString() + " Ks";
 
-  const cartBar = document.getElementById("cart-bar");
+      const cartBar = document.getElementById("cart-bar");
+      const homeVisible = !document.getElementById("view-home").classList.contains("hidden-view");
+      const receiptVisible = !document.getElementById("view-receipt").classList.contains("hidden-view");
 
-  const homeVisible = !document.getElementById("view-home").classList.contains("hidden-view");
-  const receiptVisible = !document.getElementById("view-receipt").classList.contains("hidden-view");
-
-  if (count > 0 && !homeVisible && !receiptVisible) {
-    cartBar.classList.remove("translate-y-full");
-  } else {
-    cartBar.classList.add("translate-y-full");
-  }
-}
+      if (count > 0 && !homeVisible && !receiptVisible) {
+        cartBar.classList.remove("translate-y-full");
+      } else {
+        cartBar.classList.add("translate-y-full");
+      }
+    }
 
     function clearCart() {
       cart = {};
-      updateCartBar();
-
-      if (currentProduct && currentProduct.plans) {
-        currentProduct.plans.forEach(plan => {
-          const qtyEl = document.getElementById("qty-" + plan.id);
-          if (qtyEl) qtyEl.textContent = "";
-        });
+      if (currentProduct) {
+        renderProductDetail();
       }
+      updateCartBar();
     }
 
     function openPaymentModal() {
-  if (!Object.keys(cart).length) return;
-  const modal = document.getElementById("payment-modal");
-  modal.classList.remove("hidden", "opacity-0", "pointer-events-none");
-  modal.classList.add("flex", "opacity-100");
-}
+      if (!Object.keys(cart).length) return;
+      const modal = document.getElementById("payment-modal");
+      modal.classList.remove("hidden", "opacity-0", "pointer-events-none");
+      modal.classList.add("flex", "opacity-100");
+    }
 
-function closePaymentModal() {
-  const modal = document.getElementById("payment-modal");
-  modal.classList.remove("flex", "opacity-100");
-  modal.classList.add("opacity-0", "pointer-events-none");
-  setTimeout(() => {
-    modal.classList.add("hidden");
-  }, 200);
-}
+    function closePaymentModal() {
+      const modal = document.getElementById("payment-modal");
+      modal.classList.remove("flex", "opacity-100");
+      modal.classList.add("opacity-0", "pointer-events-none");
+      setTimeout(() => modal.classList.add("hidden"), 200);
+    }
 
     function copyText(text) {
-  navigator.clipboard.writeText(text);
-}
+      navigator.clipboard.writeText(text);
+    }
 
     function processReceipt() {
       const receiptItems = document.getElementById("receipt-items");
       const receiptTotal = document.getElementById("receipt-total");
-
       receiptItems.innerHTML = "";
       let total = 0;
 
       Object.values(cart).forEach(item => {
         const lineTotal = item.qty * item.price;
         total += lineTotal;
-
         receiptItems.innerHTML += `
-          <div class="flex justify-between items-start border-b border-white/10 pb-4">
+          <div class="flex items-start justify-between border-b border-white/10 pb-4">
             <div>
-              <p class="font-bold">${item.name} <span class="text-xs text-gray-500 font-normal">x${item.qty}</span></p>
-              <p class="text-xs text-gray-400">${item.title} - ${item.subtitle}</p>
-              <span class="inline-block mt-1 text-[10px] px-2 py-1 rounded-full border border-yellow-400/30 bg-yellow-400/10 text-gold">${item.duration}</span>
+              <p class="font-semibold text-white">${item.name} <span class="text-xs font-normal text-slate-500">x${item.qty}</span></p>
+              <p class="mt-1 text-sm text-slate-400">${item.title} • ${item.subtitle}</p>
+              <span class="mt-2 inline-block rounded-full border border-yellow-400/20 bg-yellow-400/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">${item.duration}</span>
             </div>
-            <p class="font-semibold">${lineTotal.toLocaleString()} Ks</p>
+            <p class="font-semibold text-white">${lineTotal.toLocaleString()} Ks</p>
           </div>
         `;
       });
@@ -1121,41 +2285,37 @@ function closePaymentModal() {
     }
 
     function copyOrderInfo() {
-  let text = "THOMAS DIGITAL RESELLER ORDER\n\n";
-  let total = 0;
+      let text = "THOMAS DIGITAL RESELLER ORDER\n\n";
+      let total = 0;
 
-  Object.values(cart).forEach((item, index, arr) => {
-    const lineTotal = item.qty * item.price;
-    total += lineTotal;
+      Object.values(cart).forEach((item, index, arr) => {
+        const lineTotal = item.qty * item.price;
+        total += lineTotal;
+        text += `${item.name}\n`;
+        text += `Plan: ${item.title}\n`;
+        text += `Detail: ${item.subtitle}\n`;
+        text += `Duration: ${item.duration}\n`;
+        text += `Qty: ${item.qty}\n`;
+        text += `Price: ${lineTotal.toLocaleString()} Ks\n`;
+        if (index !== arr.length - 1) {
+          text += "\n-------------\n\n";
+        }
+      });
 
-    text += `${item.name}\n`;
-    text += `Plan: ${item.title}\n`;
-    text += `Detail: ${item.subtitle}\n`;
-    text += `Duration: ${item.duration}\n`;
-    text += `Qty: ${item.qty}\n`;
-    text += `Price: ${lineTotal.toLocaleString()} Ks\n`;
-
-    if (index !== arr.length - 1) {
       text += "\n-------------\n\n";
+      text += `Total: ${total.toLocaleString()} Ks`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btnText = document.getElementById("copy-order-btn-text");
+        const btnIcon = document.querySelector("#copy-order-btn i");
+        btnText.textContent = "Copied!";
+        btnIcon.className = "fa-solid fa-check";
+        setTimeout(() => {
+          btnText.textContent = "Copy Order Info";
+          btnIcon.className = "fa-solid fa-copy";
+        }, 2000);
+      });
     }
-  });
-
-  text += "\n-------------\n\n";
-  text += `Total: ${total.toLocaleString()} Ks`;
-
-  navigator.clipboard.writeText(text).then(() => {
-    const btnText = document.getElementById("copy-order-btn-text");
-    const btnIcon = document.querySelector("#copy-order-btn i");
-
-    btnText.textContent = "Copied!";
-    btnIcon.className = "fa-solid fa-check";
-
-    setTimeout(() => {
-      btnText.textContent = "Copy Order Info";
-      btnIcon.className = "fa-solid fa-copy";
-    }, 2000);
-  });
-}
 
     function messageAdmin() {
       let text = "Hello Admin, I want to order:%0A%0A";
@@ -1177,9 +2337,35 @@ function closePaymentModal() {
       showView("store");
     }
 
+    function setActiveCategory(category) {
+      activeCategory = category;
+      renderProducts(category, searchTerm, sortMode);
+      document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.textContent === category);
+      });
+    }
+
+    function attachSearch() {
+      const input = document.getElementById("search-input");
+      const sortSelect = document.getElementById("sort-select");
+      input.addEventListener("input", (event) => {
+        searchTerm = event.target.value.trim();
+        renderProducts(activeCategory, searchTerm, sortMode);
+      });
+      sortSelect.addEventListener("change", (event) => {
+        sortMode = event.target.value;
+        renderProducts(activeCategory, searchTerm, sortMode);
+      });
+    }
+
     initStars();
+    initReveal();
+    renderCategoryPreview();
+    renderFeaturedProducts();
     renderCategories();
     renderProducts("All Products");
+    attachSearch();
+    updateCartBar();
   </script>
 </body>
 </html>
