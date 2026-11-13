@@ -13,7 +13,7 @@ A single-page static website (`index.html`) that lists the shop's digital produc
 Products are grouped by category in the store, with search, category filters, and sorting. Categories in `index.html` include:
 
 - **AI Tools** — ChatGPT, Claude AI, Gemini, Grok AI, GitHub Copilot, Cursor AI, Perplexity AI, HeyGen, Runway, ElevenLabs, Leonardo AI, Gamma AI, and others
-- **VPN** — Express VPN, LetsVPN, NordVPN, Surfshark, ExitLag, Outline VPN, V2Box, HMA VPN
+- **VPN** — ExpressVPN, LetsVPN, NordVPN, Surfshark, ExitLag, Outline VPN, V2Box, HMA VPN
 - **Adobe Suite** — Creative Cloud, Photoshop, Lightroom, Premiere Pro, Illustrator, After Effects, Acrobat Pro, InDesign, and others
 - **Editing apps** — CapCut Pro, Alight Motion, Canva Pro, Picsart, Remini, Wink, VSCO, PhotoRoom
 - **Streaming, music, and social** — Netflix, HBO Max, Crunchyroll, Spotify, Apple Music, YouTube Premium, TikTok Japan, Zoom
