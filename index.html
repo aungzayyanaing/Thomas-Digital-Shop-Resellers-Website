@@ -962,7 +962,7 @@
         cat: "AI Tools",
         name: "NotebookLM",
         desc: "OwnMail Invite powered by GoogleOne Gemini",
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Notebook_icon.svg/256px-Notebook_icon.svg.png",
+        img: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Notebook_icon.svg/330px-Notebook_icon.svg.png",
         icon: "fa-note-sticky",
         plans: [
           { id: "notebooklm-3m", title: "3 Months", subtitle: "OwnMail Invite", duration: "3 Months", price: 25000 },
@@ -980,7 +980,7 @@
         icon: "fa-brain",
         plans: [
           { id: "gemini-1", title: "Private (2TB Storage)", subtitle: "1 Month", duration: "1 Month", price: 140000 },
-          { id: "gemini-2", title: "Private (2TB Storage)", subtitle: "3 Months", duration: "3 Months", price: 24000 },
+          { id: "gemini-2", title: "Private (2TB Storage)", subtitle: "3 Months", duration: "3 Months", price: 240000 },
           { id: "gemini-3", title: "Own Mail", subtitle: "1 Month", duration: "1 Month", price: 20000 },
           { id: "gemini-4", title: "Own Mail", subtitle: "3 Months", duration: "3 Months", price: 31000 }
         ]
@@ -1196,7 +1196,7 @@
         cat: "Global Payments Apps",
         name: "PayPal",
         desc: "Personal Accounts",
-        img: "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/paypal-app-icon.png",
+        img: "https://cdn.simpleicons.org/paypal/00457C",
         icon: "fa-paypal",
         plans: [
           { id: "paypal-1", title: "Personal", subtitle: "Normal Account", duration: "Life", price: 150000 },
@@ -1232,7 +1232,7 @@
         cat: "Social & Media",
         name: "TikTok Japan",
         desc: "Japan Region Account",
-        img: "https://iconape.com/wp-content/files/ea/110921/svg/tiktok-icon-black-1.svg",
+        img: "https://cdn.simpleicons.org/tiktok/white",
         icon: "fa-music",
         plans: [
           { id: "tiktok-1", title: "Japan Account", subtitle: "1 Account", duration: "Life", price: 150000 }
@@ -1522,6 +1522,10 @@
     ];
     // Apply user-provided price mappings to product plans (expanded)
     function applyUserPrices() {
+      // Products whose prices are set deliberately (added via addIfMissing, or
+      // with non-placeholder base prices) must keep them: the generic duration
+      // fallback below would otherwise overwrite them with flat duration rates.
+      const explicitPriceIds = ['netflix', 'hbo-max', 'apple-music', 'qobuz', 'google-one', 'vsco', 'photoroom', 'coursera', 'microsoft-365', 'wps-office', 'notebooklm', 'exitlag-vpn'];
       const durationMap = {
         '1 Month': 10000,
         '3 Months': 15000,
@@ -1636,8 +1640,8 @@
           if (name.includes('chatgpt') || product.id === 'chatgpt') {
             if (plan.title && plan.title.toLowerCase().includes('personal')) plan.price = 54000;
             else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('invite')) plan.price = 100000;
-            else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('own') && !plan.title.toLowerCase().includes('warranty')) plan.price = 120000;
-            else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('own') && plan.title.toLowerCase().includes('full warranty')) plan.price = 134000;
+            else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('own') && !plan.subtitle.toLowerCase().includes('warranty')) plan.price = 120000;
+            else if (plan.title && plan.title.toLowerCase().includes('business') && plan.subtitle && plan.subtitle.toLowerCase().includes('own') && plan.subtitle.toLowerCase().includes('full warranty')) plan.price = 134000;
             return;
           }
 
@@ -1714,7 +1718,7 @@
 
           if (name.includes('flow')) {
             if (dur.includes('3 Months')) {
-              if (sub.includes('own')) plan.price = 20000; else plan.price = 25000;
+              if (sub.includes('own') || (plan.title || '').toLowerCase().includes('own')) plan.price = 20000; else plan.price = 25000;
             }
             return;
           }
@@ -1722,17 +1726,20 @@
           if (name.includes('canva')) { plan.price = 20000; return; }
           if (name.includes('capcut')) { if (sub.includes('2 devices')) plan.price = 32000; else plan.price = 25000; return; }
           if (name.includes('alight')) {
-            if (sub.includes('share') && dur.includes('9')) plan.price = 10000;
-            else if (sub.includes('share') && dur.includes('1 Year')) plan.price = 15000;
-            else if (sub.includes('private') && dur.includes('9')) plan.price = 20000;
-            else if (sub.includes('private') && dur.includes('1 Year')) plan.price = 25000;
+            const ttl = (plan.title || '').toLowerCase();
+            if (ttl.includes('share') && dur.includes('9')) plan.price = 10000;
+            else if (ttl.includes('share') && dur.includes('1 Year')) plan.price = 15000;
+            else if (ttl.includes('private') && dur.includes('9')) plan.price = 20000;
+            else if (ttl.includes('private') && dur.includes('1 Year')) plan.price = 25000;
             return;
           }
 
           if (name.includes('picsart')) { if (sub.includes('private')) plan.price = 10000; else plan.price = 5000; return; }
           if (name.includes('wink')) {
+            const ttl = (plan.title || '').toLowerCase();
             if (dur.includes('Week')) plan.price = 5000;
-            else if (dur.includes('Month') && sub.includes('own')) plan.price = 30000;
+            else if (dur.includes('Month') && ttl.includes('share')) plan.price = 10000;
+            else if (dur.includes('Month') && (sub.includes('own') || ttl.includes('own'))) plan.price = 30000;
             else if (dur.includes('Month')) plan.price = 31000;
             else if (dur.includes('Year')) plan.price = 100000;
             return;
@@ -1740,7 +1747,7 @@
           if (name.includes('remini')) {
             if (sub.includes('apk pro')) plan.price = 31000;
             else if (sub.includes('apk lite')) plan.price = 20000;
-            else if (sub.includes('web private')) plan.price = 15000;
+            else if (sub.includes('web') && (plan.title || '').toLowerCase().includes('private')) plan.price = 15000;
             else plan.price = 5000;
             return;
           }
@@ -1777,7 +1784,8 @@
           }
 
           if (name.includes('surfshark')) {
-            if (dur.includes('2 Months')) plan.price = 17000; else if (dur.includes('Month')) plan.price = 15500; else if (sub.includes('private')) plan.price = 44000; return;
+            const ttl = (plan.title || '').toLowerCase();
+            if (ttl.includes('private')) plan.price = 44000; else if (dur.includes('2 Months')) plan.price = 17000; else if (dur.includes('Month')) plan.price = 15500; return;
           }
 
           if (name.includes('hma')) { plan.price = 17000; return; }
@@ -1793,14 +1801,16 @@
 
           // Duolingo mapping
           if (product.id === 'duolingo' || name.includes('duolingo')) {
-            if (dur.includes('14 Days') && sub.toLowerCase().includes('family')) plan.price = 10000;
-            else if (dur.includes('1 Month') && sub.toLowerCase().includes('family')) plan.price = 15000;
+            const ttl = (plan.title || '').toLowerCase();
+            if (dur.includes('14 Days') && ttl.includes('family')) plan.price = 10000;
+            else if (dur.includes('1 Month') && ttl.includes('family')) plan.price = 15000;
             else if (dur.includes('14 Days')) plan.price = 5500;
             else if (dur.includes('1 Month')) plan.price = 20000;
             return;
           }
 
-          // Fallback: map by duration if matched
+          // Fallback: map by duration if matched (skip products with deliberate prices)
+          if (explicitPriceIds.includes(product.id)) return;
           for (const key in durationMap) {
             if (dur && dur.includes(key)) {
               plan.price = durationMap[key];
@@ -1826,8 +1836,8 @@
         { matchProduct: p => (p.name||'').toLowerCase().includes('runway') || p.id === 'runway', matchPlan: plan => (plan.title||'').toLowerCase().includes('standard') || (plan.subtitle||'').toLowerCase().includes('625'), price: 79000 },
         { matchProduct: p => (p.name||'').toLowerCase().includes('runway') || p.id === 'runway', matchPlan: plan => (plan.title||'').toLowerCase().includes('pro') || (plan.subtitle||'').toLowerCase().includes('2250'), price: 130000 },
         { matchProduct: p => (p.name||'').toLowerCase().includes('runway') || p.id === 'runway', matchPlan: plan => (plan.title||'').toLowerCase().includes('unlimited') || (plan.subtitle||'').toLowerCase().includes('relax'), price: 310000 },
-        { matchProduct: p => (p.id === 'spotify' || (p.name||'').toLowerCase().includes('spotify')) && (plan.duration||'').includes('3 Months') && (plan.subtitle||'').toLowerCase().includes('own mail'), price: 45000 },
-        { matchProduct: p => (p.id === 'spotify' || (p.name||'').toLowerCase().includes('spotify')) && (plan.duration||'').toLowerCase().includes('6 months') && (plan.subtitle||'').toLowerCase().includes('own mail'), price: 85000 },
+        { matchProduct: p => p.id === 'spotify' || (p.name||'').toLowerCase().includes('spotify'), matchPlan: plan => (plan.duration||'').includes('3 Months') && (plan.subtitle||'').toLowerCase().includes('own mail'), price: 45000 },
+        { matchProduct: p => p.id === 'spotify' || (p.name||'').toLowerCase().includes('spotify'), matchPlan: plan => (plan.duration||'').toLowerCase().includes('6 months') && (plan.subtitle||'').toLowerCase().includes('own mail'), price: 85000 },
         { matchProduct: p => p.id === 'invideo-studio' || (p.name||'').toLowerCase().includes('invideo'), matchPlan: plan => (plan.duration||'').includes('1 Month'), price: 35000 },
         { matchProduct: p => p.id === 'invideo-studio' || (p.name||'').toLowerCase().includes('invideo'), matchPlan: plan => (plan.duration||'').includes('3 Months'), price: 75000 },
         { matchProduct: p => p.id === 'invideo-studio' || (p.name||'').toLowerCase().includes('invideo'), matchPlan: plan => (plan.duration||'').includes('6 Months'), price: 130000 },
@@ -2316,17 +2326,17 @@
     }
 
     function messageAdmin() {
-      let text = "Hello Admin, I want to order:%0A%0A";
+      const lines = ["Hello Admin, I want to order:", ""];
       let total = 0;
 
       Object.values(cart).forEach(item => {
         const lineTotal = item.qty * item.price;
         total += lineTotal;
-        text += `${item.name} - ${item.title} - ${item.subtitle} - ${item.duration} x${item.qty} = ${lineTotal.toLocaleString()} Ks%0A`;
+        lines.push(`${item.name} - ${item.title} - ${item.subtitle} - ${item.duration} x${item.qty} = ${lineTotal.toLocaleString()} Ks`);
       });
 
-      text += `%0ATotal: ${total.toLocaleString()} Ks`;
-      window.open(`https://t.me/Thomas_Shops?text=${text}`, "_blank");
+      lines.push("", `Total: ${total.toLocaleString()} Ks`);
+      window.open(`https://t.me/Thomas_Shops?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
     }
 
     function resetCartAndGoStore() {
