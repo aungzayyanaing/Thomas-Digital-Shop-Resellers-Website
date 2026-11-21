@@ -925,17 +925,6 @@
         ]
       },
       {
-        id: "jenny-ai",
-        cat: "AI Tools",
-        name: "Jenny AI",
-        desc: "AI assistant and content generation",
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGMm7BZNZlfiaoj8JKVOO2pl_TjbTgJ_7QtoofBZTZp-uJBWvB-GBWhzlN&s=10",
-        icon: "fa-robot",
-        plans: [
-          { id: "jenny-ai-1", title: "3 Months", subtitle: "Standard", duration: "3 Months", price: 150000 }
-        ]
-      },
-      {
         id: "meitu-vip",
         cat: "AI Tools",
         name: "Meitu VIP",
@@ -1844,7 +1833,6 @@
         { matchProduct: p => p.id === 'leonardo-ai' || (p.name||'').toLowerCase().includes('leonardo'), matchPlan: plan => (plan.duration||'').includes('1 Month'), price: 75000 },
         { matchProduct: p => p.id === 'consensus-ai' || (p.name||'').toLowerCase().includes('consensus'), matchPlan: plan => (plan.duration||'').includes('3 Months'), price: 30000 },
         { matchProduct: p => p.id === 'hedra-basic' || (p.name||'').toLowerCase().includes('hedra'), matchPlan: plan => true, price: 55000 },
-        { matchProduct: p => p.id === 'jenny-ai' || (p.name||'').toLowerCase().includes('jenny'), matchPlan: plan => (plan.duration||'').includes('3 Months'), price: 15000 },
         { matchProduct: p => (p.name||'').toLowerCase().includes('jenni') || p.id === 'jenni-ai', matchPlan: plan => (plan.duration||'').includes('1 Month'), price: 20000 },
         { matchProduct: p => (p.name||'').toLowerCase().includes('jenni') || p.id === 'jenni-ai', matchPlan: plan => (plan.duration||'').toLowerCase().includes('3 months'), price: 39000 },
         { matchProduct: p => p.id === 'humanizer-basic' || (p.name||'').toLowerCase().includes('humanizer basic'), matchPlan: plan => true, price: 55000 },
